@@ -34,6 +34,9 @@ public class Shell
     private int scroll;
     private string lastCompletion;
 
+    // the word tab is finishing, for completions that follow paths
+    public string Completing { get; private set; }
+
     public bool WantsClose;
     // commands that change the game only work in edit mode
     public bool EditMode;
@@ -562,6 +565,7 @@ public class Shell
         string before = input.Substring(0, caret);
         int space = before.LastIndexOf(' ');
         string word = before.Substring(space + 1);
+        Completing = word;
         List<string> options = space < 0
             ? (EditMode ? EditCommands.All.Select(c => c.Shown).Concat(Commands.All.Select(c => c.Shown)) : Commands.All.Where(c => !c.hidden).Select(c => c.Shown)).Distinct().ToList()
             : FindCommand(before.Split(' ')[0])?.complete?.Invoke(before.Substring(0, space).Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Skip(1).ToArray()) ?? new List<string>();
@@ -582,7 +586,7 @@ public class Shell
         }
         if (found.Count == 1)
         {
-            common = found[0] + " ";
+            common = found[0].EndsWith("/") ? found[0] : found[0] + " ";
         }
         if (common.Length > word.Length)
         {
@@ -595,7 +599,8 @@ public class Shell
             Out(Prompt, Ink.Accent);
             Out(PromptEnd, Ink.Dim);
             Print(input);
-            Print(string.Join("  ", found), Ink.Dim);
+            // paths show only their last part, like ls
+            Print(string.Join("  ", found.Select(f => f.Length > 1 && f.TrimEnd('/').Contains('/') ? f.Substring(f.TrimEnd('/').LastIndexOf('/') + 1) : f)), Ink.Dim);
         }
         lastCompletion = before;
     }

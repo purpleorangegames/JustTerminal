@@ -230,8 +230,21 @@ public static class Files
         return false;
     }
 
-    public static List<string> Names(Shell sh) =>
-        Cwd(sh)?.Kids.OrderBy(c => c.folder ? 0 : 1).ThenBy(c => c.name).Select(c => c.name.Replace(' ', '_') + (c.folder ? "/" : "")).ToList() ?? new List<string>();
+    // what tab offers: the names in the folder the word being typed points into, like /pawns/Ta
+    public static List<string> Names(Shell sh)
+    {
+        string word = sh.Completing ?? "";
+        int slash = word.LastIndexOf('/');
+        string dir = slash < 0 ? (word.StartsWith("~") ? "~" : "") : word.Substring(0, slash + 1);
+        FileNode n = dir == "" ? Cwd(sh) : Find(sh, dir.Replace('_', ' '));
+        if (n == null || !n.folder)
+        {
+            return new List<string>();
+        }
+        // ~ alone becomes ~/
+        string front = dir == "~" ? "~/" : dir;
+        return n.Kids.OrderBy(c => c.folder ? 0 : 1).ThenBy(c => c.name).Select(c => front + c.name.Replace(' ', '_') + (c.folder ? "/" : "")).ToList();
+    }
 
     private static bool Ready(Shell sh)
     {

@@ -1,6 +1,6 @@
 # schedule: show or set the hours, an edit mode command
 # one letter an hour from midnight: s sleep, w work, j joy, a anything, m meditate
-# reset is the game's start, nightshift works nights and sleeps 9 to 17
+# reset is the game's start, nightshift is the same turned around, sleep 10 to 18
 # schedule Tasca, schedule @night nightshift, schedule all reset
 
 if args() = 0

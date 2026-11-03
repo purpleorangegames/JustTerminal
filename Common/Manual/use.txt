@@ -154,7 +154,7 @@ help there to see them, exit leaves.
   schedule @night wwwwwwssssssssawwwwwjjjj
                                   s sleep, w work, j joy, a anything,
                                   m meditate, one letter an hour
-  schedule @night nightshift      works nights, sleeps 9 to 17
+  schedule @night nightshift      sleeps 10 to 18
   schedule all reset              back to the game's start
 
 
@@ -171,6 +171,8 @@ and priority. What one takes can be kept and put on others:
 apply changes things, so it's for edit mode. The file is plain text,
 nano can change it: hitpoints, quality and one thing on each line.
 Things a shelf can't hold are left out when it's applied there.
+Linked shelves are one entry, with the link's name, since the game
+has them share what they take.
 
 Who can be a name, @ and a group, or all.
 

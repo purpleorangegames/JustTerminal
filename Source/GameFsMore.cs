@@ -107,7 +107,7 @@ public static partial class GameFs
                 v = v switch
                 {
                     "reset" => "ssssssaaaaaaaaaaaaaaaass",
-                    "nightshift" => "wwwwwwwwjssssssssaaajwww",
+                    "nightshift" => "aaaaaaaaaassssssssaaaaaa",
                     _ => v
                 };
                 if (v.Length != 24 || v.Any(c => hours.All(x => x.letter != c || x.def() == null)))
@@ -337,13 +337,21 @@ public static partial class GameFs
         {
             return;
         }
-        Numbered(d, map.haulDestinationManager.AllGroupsListForReading.ToList(), (f, g) =>
+        // linked shelves share one settings, so they're one entry, named like the link
+        var all = map.haulDestinationManager.AllGroupsListForReading
+            .GroupBy(g => (g.parent as IStorageGroupMember)?.Group ?? (object)g)
+            .Select(x => (key: x.Key, groups: x.ToList()))
+            .ToList();
+        Numbered(d, all, (f, e) =>
         {
+            SlotGroup g = e.groups[0];
+            StorageGroup link = e.key as StorageGroup;
             StorageSettings settings = g.Settings;
-            File(f, "name", () => g.parent is Zone z ? z.label : g.parent is Thing t ? t.LabelCap.ToString() : g.parent.SlotYielderLabel());
+            File(f, "name", () => link != null ? link.RenamableLabel : g.parent is Zone z ? z.label : g.parent is Thing t ? t.LabelCap.ToString() : g.parent.SlotYielderLabel());
             File(f, "kind", () => g.parent is Zone ? "zone" : "building");
+            File(f, "linked", () => link?.MemberCount ?? 0);
             File(f, "room", () => StorageRoom(g, map));
-            File(f, "cells", () => g.CellsList.Count);
+            File(f, "cells", () => e.groups.Sum(x => x.CellsList.Count));
             Writable(f, "priority", () => settings.Priority.ToString().ToLowerInvariant(), value =>
             {
                 int i = Array.IndexOf(priorities, value.Trim().ToLowerInvariant());
@@ -354,7 +362,7 @@ public static partial class GameFs
                 settings.Priority = (StoragePriority)(i + 1);
                 return null;
             });
-            Writable(f, "filter", () => FilterText(settings.filter), value => SetFilter(g.parent as IStoreSettingsParent, settings, value));
+            Writable(f, "filter", () => FilterText(settings.filter), value => SetFilter(link ?? g.parent as IStoreSettingsParent, settings, value));
         });
     }
 
@@ -366,7 +374,8 @@ public static partial class GameFs
             $"hitpoints {F(filter.AllowedHitPointsPercents.min * 100f)}-{F(filter.AllowedHitPointsPercents.max * 100f)}",
             $"quality {filter.AllowedQualityLevels.min.ToString().ToLowerInvariant()}-{filter.AllowedQualityLevels.max.ToString().ToLowerInvariant()}"
         };
-        lines.AddRange(filter.AllowedThingDefs.Select(t => t.defName).OrderBy(n => n));
+        // a removed mod leaves empty spots in old filters
+        lines.AddRange(filter.AllowedThingDefs.Where(t => t != null).Select(t => t.defName).OrderBy(n => n));
         return string.Join("\n", lines);
     }
 

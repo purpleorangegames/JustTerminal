@@ -10,7 +10,7 @@ namespace JustTerminal;
 
 // for testing without touching the game, all off unless the environment variable is set:
 // JTM_TEST_LOAD=<save>    loads that save from the main menu and pauses it
-// JTM_TEST_CMDS=<a;b;c>   then opens the terminal and runs each command, key:<KeyCode> presses a key, type:<text> types, rclick:x,y rtype:<text> rkey:<Key> go through the game's real input, pin, tab:<def>, clickmap
+// JTM_TEST_CMDS=<a;b;c>   then opens the terminal and runs each command, key:<KeyCode> presses a key, type:<text> types, link:N links the first N storage buildings, rclick:x,y rtype:<text> rkey:<Key> go through the game's real input, pin, tab:<def>, clickmap
 // JTM_TEST_SHOTS=<dir>    with a screenshot after each in dir, and quits
 // JTM_TEST_RUN=<frames>   lets time run that many frames at the fastest speed first
 // JTM_TEST_SAVEAS=<name>  then saves the game with that name
@@ -244,6 +244,17 @@ public static class TestHooks
                 else if (list[step].StartsWith("setsave:"))
                 {
                     JustTerminalMod.Settings.saveRecordings = list[step].EndsWith("on");
+                }
+                else if (list[step].StartsWith("link:"))
+                {
+                    // links the first N storage buildings, like the link button does
+                    var members = Find.CurrentMap.listerBuildings.allBuildingsColonist.OfType<IStorageGroupMember>().Take(int.Parse(list[step].Substring(5))).ToList();
+                    StorageGroup group = Find.CurrentMap.storageGroups.NewGroup();
+                    group.InitFrom(members[0]);
+                    foreach (IStorageGroupMember m in members)
+                    {
+                        m.SetStorageGroup(group);
+                    }
                 }
                 else if (list[step] == "scripts")
                 {

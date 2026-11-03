@@ -3,12 +3,17 @@
 # storage save 3 meals         keeps what 3 takes in ~/storage/meals
 # storage apply meals shelves  in edit mode, on every shelf
 # apply takes a number, zones, shelves, all, or a room like kitchen
+# linked shelves are one entry, they share what they take
 
 if args() = 0
   for s in /storage
     out bright {pad(name(s), 4)}
     out {pad(s/name, 26)}
-    out dim {pad(s/kind, 10)}
+    if s/linked > 0
+      out dim {pad("linked " + s/linked, 10)}
+    else
+      out dim {pad(s/kind, 10)}
+    end
     out dim {pad(s/room, 16)}
     print {s/priority}
   end
