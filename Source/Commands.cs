@@ -52,6 +52,13 @@ public static class Commands
         new Command { name = "danger", examples = new[] { ("danger", "enemies and wild predators, closest to a colonist first") }, help = "enemies and predators on the map", run = Programs.Runner("danger") },
         new Command { name = "idle", alias = "wander", examples = new[] { ("idle", "colonists with nothing to do"), ("wander", "the same") }, help = "colonists with nothing to do", run = Programs.Runner("idle") },
         new Command { name = "attention", examples = new[] { ("attention", "the game's alerts, wounds no one treated and idle colonists") }, help = "what needs you now", run = Programs.Runner("attention") },
+        new Command { name = "why", args = "<name>", help = "what a colonist is thinking, worst first", run = Programs.Runner("why"), complete = done => done.Length == 0 ? ColonistNames() : new List<string>(), examples = new[] { ("why Tasca", "each thought with how much mood it gives or takes") } },
+        new Command { name = "rooms", help = "the rooms with temperature, cleanliness and impressiveness", run = Programs.Runner("rooms"), examples = new[] { ("rooms", "every room, bedrooms say whose"), ("rooms | grep bedroom", "only the bedrooms") } },
+        new Command { name = "trade", args = "[number]", help = "the traders on the map and what they carry", run = Programs.Runner("trade"), examples = new[] { ("trade", "the traders on the map"), ("trade 1", "what the first one carries") } },
+        new Command { name = "caravans", help = "your caravans, where they go and their food", run = Programs.Runner("caravans"), examples = new[] { ("caravans", "each caravan with where it's going and when it gets there") } },
+        new Command { name = "bills", help = "the workbenches and their bills", run = Programs.Runner("bills"), examples = new[] { ("bills", "each workbench with its bills") } },
+        new Command { name = "storage", args = "[save|apply ...]", help = "stockpiles and shelves, save what one takes and put it on others", run = Programs.Runner("storage"), examples = new[] { ("storage", "lists them with their room and priority"), ("storage save 3 meals", "keeps what 3 takes in ~/storage/meals"), ("storage apply meals shelves", "in edit mode, every shelf takes the same"), ("storage apply meals kitchen", "the stockpiles in kitchens") } },
+        new Command { name = "look", args = "<name>", help = "the camera goes to someone", run = Look, complete = done => done.Length == 0 ? ColonistNames() : new List<string>(), examples = new[] { ("look Tasca", "the camera goes to Tasca and selects her"), ("action letter {who} is down; look {who}", "in a when script") } },
         new Command { name = "factions", examples = new[] { ("factions", "every faction, how they see us and their leader") }, help = "factions and how they see us", run = Programs.Runner("factions") },
         new Command { name = "history", examples = new[] { ("history", "what you typed, up/down brings it back") }, help = "commands typed so far", run = History },
         new Command { name = "color", examples = new[] { ("color amber", "amber screen"), ("color", "shows the color in use") }, args = "<green|amber|white|custom>", help = "change the screen color, custom is set in the mod options", run = ColorCmd, complete = done => done.Length == 0 ? Phosphor.All.Select(p => p.name).Append("custom").ToList() : new List<string>() },
@@ -86,6 +93,25 @@ public static class Commands
         new Command { name = "edit", examples = new[] { ("edit", "red screen, the commands there change the game"), ("edit, then help", "the edit commands") }, help = "edit mode, to change colonists' settings", run = (sh, _) => sh.SetEditMode(true) },
         new Command { name = "exit", examples = new[] { ("exit", "closes the terminal") }, help = "close the terminal", run = (sh, _) => sh.WantsClose = true }
     };
+
+    // anyone on our maps or in a caravan, colonists first
+    private static void Look(Shell sh, string[] args)
+    {
+        if (args.Length == 0)
+        {
+            sh.Print("usage: look <name>", Ink.Dim);
+            return;
+        }
+        string wanted = string.Join(" ", args).Replace('_', ' ');
+        IEnumerable<Pawn> all = Colonists().Concat(Verse.Find.Maps.SelectMany(m => m.mapPawns.AllPawnsSpawned));
+        Pawn p = all.FirstOrDefault(x => x.LabelShort.Equals(wanted, StringComparison.OrdinalIgnoreCase));
+        if (p == null)
+        {
+            sh.Print("nobody called " + wanted, Ink.Bad);
+            return;
+        }
+        CameraJumper.TryJumpAndSelect(p);
+    }
 
     private static void PipeOnly(Shell sh, string[] args) => sh.Print("this one goes after |, like pawns | grep Sleeping", Ink.Dim);
 

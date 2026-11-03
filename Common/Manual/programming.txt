@@ -206,6 +206,19 @@ the reason in error, or none when it went fine:
     end
   end
 
+These can change too:
+  /time/speed                       paused, normal, fast or superfast
+  p/drafted                         yes or no
+  p/schedule                        24 letters, s w j a m
+  /growing/1/sow                    yes or no
+  /bills/1/list/1/suspended         yes or no
+  /bills/1/list/1/count             how many to make
+  /storage/1/priority               low, normal, preferred, important
+                                    or critical
+  /storage/1/filter                 what it takes, as text
+
+Numbered folders take 1 as well as 01.
+
 The choices are in the game's folders too:
   /work       the jobs, in the work tab's order
   /care       none, nomeds, herbal, industrial and best

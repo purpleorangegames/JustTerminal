@@ -62,6 +62,13 @@ These only read, nothing here changes the game.
   idle        colonists with nothing to do, wander does the same
   factions    every faction, how they see us and their leader
   attention   the game's alerts, untreated wounds and idle colonists
+  why         what a colonist is thinking, why Tasca
+  rooms       temperature, cleanliness and impressiveness of each room
+  trade       the traders on the map, trade 1 shows what one carries
+  caravans    where they go, when they get there, their food
+  bills       the workbenches and their bills
+  storage     stockpiles and shelves, see below
+  look        the camera goes to someone, look Tasca
   history     the commands you typed
 
 
@@ -141,6 +148,27 @@ help there to see them, exit leaves.
   exile Drill                     asks to banish Drill
   caravan                         the towns close by
   caravan Tifunni                 opens the caravan window, route set
+  draft @guards                   drafts the guards
+  undraft all                     everyone back to work
+  schedule Tasca                  her 24 hours from midnight
+  schedule @night wwwwwwssssssssawwwwwjjjj
+                                  s sleep, w work, j joy, a anything,
+                                  m meditate, one letter an hour
+
+
+STORAGE
+
+storage lists every stockpile zone and storage building with its room
+and priority. What one takes can be kept and put on others:
+
+  storage save 3 meals          keeps what 3 takes in ~/storage/meals
+  storage apply meals shelves   every shelf takes the same
+  storage apply meals kitchen   the ones in kitchens
+  storage apply meals 5         only 5, zones and all work too
+
+apply changes things, so it's for edit mode. The file is plain text,
+nano can change it: hitpoints, quality and one thing on each line.
+Things a shelf can't hold are left out when it's applied there.
 
 Who can be a name, @ and a group, or all.
 
@@ -196,6 +224,17 @@ changed by you. ls and cat work there like anywhere else.
   /mechs      your mechs with their energy
   /quests     the quests waiting for an answer or going on
   /world      the towns of other factions, closest first
+  /time       speed, paused, hour and day
+  /rooms      each room with temperature, cleanliness and more
+  /trade      traders on the map with their goods and prices
+  /caravans   your caravans
+  /growing    growing zones with the crop and how grown it is
+  /bills      the workbenches and their bills
+  /storage    stockpiles and shelves, with what they take
+  /ideology, /mechanitors, /anomaly   when those DLCs are on
+
+Each colonist's folder also has thoughts, social, records, schedule
+and drafted, and certainty, role, royaltitle and psylink with the DLCs.
   /work, /care, /areas, /policies, /groups
               the choices the edit commands use
 

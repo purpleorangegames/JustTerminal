@@ -12,7 +12,7 @@ using HarmonyLib;
 namespace JustTerminal;
 
 // the folders under / are the game itself, read only, each file is one value read when it's opened
-public static class GameFs
+public static partial class GameFs
 {
     // built again on each use, cheap since folders fill only when something looks inside and values are read when asked
     public static FileNode Top()
@@ -86,6 +86,7 @@ public static class GameFs
         Dir("idle", top, Idle);
         Dir("power", top, Power);
         Dir("stock", top, Stock);
+        More(top);
         return top;
     }
 
@@ -194,7 +195,6 @@ public static class GameFs
         File(f, "untended", () => pawn.health.HasHediffsNeedingTend());
         File(f, "sick", () => pawn.health.hediffSet.hediffs.Any(h => h.def.makesSickThought));
         File(f, "downed", () => pawn.Downed);
-        File(f, "drafted", () => pawn.Drafted);
         File(f, "breaking", () => Breaking(pawn));
         File(f, "mental", () => pawn.InMentalState ? pawn.MentalStateDef.label : "none");
         File(f, "idle", () => IsIdle(pawn));
@@ -205,6 +205,7 @@ public static class GameFs
         File(f, "xenotype", () => Xenotype(pawn));
         File(f, "traits", () => pawn.story?.traits == null || pawn.story.traits.allTraits.Count == 0 ? "none" : string.Join(", ", pawn.story.traits.allTraits.Select(t => t.LabelCap)));
         PawnSettings(f, pawn);
+        PawnMore(f, pawn);
         if (pawn.skills != null)
         {
             Dir("skills", f, d =>
@@ -359,6 +360,8 @@ public static class GameFs
     // numbered folders, one for each, in the order given
     private static void Numbered<T>(FileNode d, IEnumerable<T> things, Action<FileNode, T> files)
     {
+        // 1 finds 01 too
+        d.alias = n => int.TryParse(n, out int i) ? i.ToString("00") : null;
         int i = 0;
         foreach (T thing in things.ToList())
         {

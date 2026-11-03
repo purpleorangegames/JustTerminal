@@ -1,0 +1,6 @@
+# pauses the game the moment enemies show up
+# it runs examples/pause.sh, so get that one too: example pause.sh
+
+when raid
+fire each
+action notify raid, {event} enemies, paused; examples/pause.sh

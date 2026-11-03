@@ -1,5 +1,5 @@
-# a letter when a colonist goes down
+# a letter when a colonist goes down, and the camera goes to them
 
 when downed
 fire each
-action letter {who} is down
+action letter {who} is down; look {who}
