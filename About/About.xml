@@ -33,9 +33,16 @@ The normal commands only read. Type edit to go into edit mode, the screen turns 
 
 There are files too, kept in the save and not on your computer: ls, cd, mkdir, cat, less, cp, mv, rm and nano to write them. The folders under / are the game itself, read only, like cat /stock/food or ls /pawns/Tasca.
 
-Most commands are small programs you can read in /bin, copy to ~/bin and change, or write your own. The language is simple: for, if, print, and set to change things in edit mode.
+Files that end in .sh are programs. Most commands are programs you can read in /bin, copy to ~/bin and change, or you can write your own. The language is simple: for, if, print, and set to change things in edit mode.
 
-Cron scripts check something every few hours, or when something happens like a raid or a colonist going down, and then send a message, a letter or run a command. cron_edit lists them to turn on and off. example lists some cron scripts and programs to start from and copies them to your files.
+Files that end in .cron are cron scripts. They check something every few hours, or run when something happens like a raid or a colonist going down, and then send a message, a letter or run a command or a program. Like this one:
+
+every 2h
+fire daily
+if /stock/food &lt; 3
+action letter only {value} days of food left
+
+cron lists them, cron_edit turns them on and off with the keys. example lists some .cron and .sh files to start from and copies them to your files.
 
 The mod options can export the files and programs of a game and import them into another.
 
