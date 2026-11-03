@@ -124,7 +124,7 @@ public class TerminalView
     {
         int fontSize = JustTerminalMod.Settings.fontSize;
         Shell sh = Terminal.Shell;
-        Phosphor p = sh.EditMode && JustTerminalMod.Settings.editRed ? Phosphor.Red : Phosphor.Get(JustTerminalMod.Settings.phosphor);
+        Phosphor p = (sh.EditMode || sh.Mode?.red == true) && JustTerminalMod.Settings.editRed ? Phosphor.Red : Phosphor.Get(JustTerminalMod.Settings.phosphor);
         bool focused = Terminal.Focused == owner;
         Rect glass = Crt.DrawFrame(inRect, p);
         Rect area = glass.ContractedBy(16f, 14f);

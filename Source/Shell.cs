@@ -21,6 +21,16 @@ public struct Span
 }
 
 // prompt, history and the lines printed so far
+// another mod's own prompt, like ai session: the lines typed go to it instead of running
+public class ShellMode
+{
+    public string prompt = "> ";
+    public bool red;
+    public Action<string> line;
+    // called once when exit, ctrl+c or ctrl+d leaves it
+    public Action leave;
+}
+
 public class Shell
 {
     private const int MaxLines = 1000;
@@ -53,7 +63,17 @@ public class Shell
     public bool CanAsk = true;
     public bool Waiting => askAnswer != null;
 
-    public string PromptEnd => EditMode ? ":edit# " : ":" + (GamePath ?? (Files.Root != null ? Files.Cwd(this)?.Path ?? "~" : "~")) + "$ ";
+    public ShellMode Mode;
+
+    public void LeaveMode()
+    {
+        ShellMode m = Mode;
+        Mode = null;
+        m?.leave?.Invoke();
+        Redraw = true;
+    }
+
+    public string PromptEnd => Mode != null ? Mode.prompt : EditMode ? ":edit# " : ":" + (GamePath ?? (Files.Root != null ? Files.Cwd(this)?.Path ?? "~" : "~")) + "$ ";
 
     public void Ask(string question, Action yes)
     {
@@ -230,6 +250,10 @@ public class Shell
     {
         get
         {
+            if (Mode != null)
+            {
+                return "";
+            }
             JustTerminalSettings set = JustTerminalMod.Settings;
             string user = string.IsNullOrWhiteSpace(set.promptUser) ? "rim" : set.promptUser.Trim();
             if (!string.IsNullOrWhiteSpace(set.promptHost))
@@ -268,7 +292,7 @@ public class Shell
             return;
         }
         Out(Prompt, Ink.Accent);
-        Out(PromptEnd, Ink.Dim);
+        Out(PromptEnd, Mode != null ? Ink.Accent : Ink.Dim);
         Print(line);
         line = line.Trim();
         if (line.Length == 0)
@@ -280,6 +304,18 @@ public class Shell
             history.Add(line);
         }
         historyIndex = history.Count;
+        if (Mode != null)
+        {
+            if (line is "exit" or "quit")
+            {
+                LeaveMode();
+            }
+            else
+            {
+                Mode.line?.Invoke(line);
+            }
+            return;
+        }
         Execute(line);
     }
 
@@ -463,6 +499,13 @@ public class Shell
                     Print(input + "^C");
                     input = "";
                     caret = 0;
+                    LeaveMode();
+                    return true;
+                case KeyCode.D:
+                    if (Mode != null && input.Length == 0)
+                    {
+                        LeaveMode();
+                    }
                     return true;
                 case KeyCode.U:
                     input = input.Substring(caret);
@@ -574,6 +617,11 @@ public class Shell
 
     private void Complete()
     {
+        // a mode's lines aren't commands
+        if (Mode != null)
+        {
+            return;
+        }
         string before = input.Substring(0, caret);
         int space = before.LastIndexOf(' ');
         string word = before.Substring(space + 1);
@@ -639,7 +687,7 @@ public class Shell
         List<Cell[]> rows = new List<Cell[]>();
         List<Cell> prompt = new List<Cell>();
         Add(prompt, Prompt, Ink.Accent);
-        Add(prompt, PromptEnd, Ink.Dim);
+        Add(prompt, PromptEnd, Mode != null ? Ink.Accent : Ink.Dim);
         int caretAt = prompt.Count + caret;
         Add(prompt, input, Ink.Bright);
         if (caretAt >= prompt.Count)
