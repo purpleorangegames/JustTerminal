@@ -10,7 +10,7 @@ namespace JustTerminal;
 
 // for testing without touching the game, all off unless the environment variable is set:
 // JTM_TEST_LOAD=<save>    loads that save from the main menu and pauses it
-// JTM_TEST_CMDS=<a;b;c>   then opens the terminal and runs each command, key:<KeyCode> presses a key, type:<text> types, link:N links the first N storage buildings, rclick:x,y rtype:<text> rkey:<Key> go through the game's real input, pin, tab:<def>, clickmap
+// JTM_TEST_CMDS=<a;b;c>   then opens the terminal and runs each command, key:<KeyCode> presses a key, type:<text> types, link:N links the first N storage buildings, waitapp waits while a program runs, rclick:x,y rtype:<text> rkey:<Key> go through the game's real input, pin, tab:<def>, clickmap
 // JTM_TEST_SHOTS=<dir>    with a screenshot after each in dir, and quits
 // JTM_TEST_RUN=<frames>   lets time run that many frames at the fastest speed first
 // JTM_TEST_SAVEAS=<name>  then saves the game with that name
@@ -29,6 +29,7 @@ public static class TestHooks
     // real input has to go in right after the frame starts, or the frame start clears it
     public static Action input;
     private static int playingFrames;
+    private static int held;
 
     public static void Tick()
     {
@@ -69,7 +70,7 @@ public static class TestHooks
                 return;
             }
         }
-        int frames = playingFrames - runFrames;
+        int frames = playingFrames - runFrames - held;
         if (frames == 25)
         {
             // the test save can have errors from mods that aren't loaded
@@ -94,6 +95,12 @@ public static class TestHooks
         int frame = (frames - 60) % 40;
         if (step < list.Length)
         {
+            // waitapp holds the steps while a program runs, like the ai thinking, 5 minutes at most
+            if (list[step] == "waitapp" && frame == 1 && Terminal.Shell.App != null && held < 18000)
+            {
+                held++;
+                return;
+            }
             if (frame == 0)
             {
                 if (list[step].StartsWith("rclick:") || list[step].StartsWith("rrclick:"))
@@ -255,6 +262,9 @@ public static class TestHooks
                     {
                         m.SetStorageGroup(group);
                     }
+                }
+                else if (list[step] == "waitapp")
+                {
                 }
                 else if (list[step] == "scripts")
                 {

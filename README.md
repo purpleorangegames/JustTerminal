@@ -2,7 +2,7 @@
 
 A terminal inside the game, with an old CRT screen look. Type commands to see your colonists, factions and the colony.
 
-Click the terminal button at the bottom bar to open it. Type help to see the commands, help and a command name shows examples for it. manual opens the manual about using it, manual programming the one about writing programs, both are in Common/Manual too.
+Click the terminal button at the bottom bar to open it. Type help to see the commands, help and a command name shows examples for it. manual opens the manual about using it, manual programming the one about writing programs, manual cron only the parts about cron, both are in Common/Manual too.
 
 You can keep notes in the terminal: mkdir, cd, ls, cat, cp, mv, rm and nano to write text files. They're kept in the save, not on your computer.
 

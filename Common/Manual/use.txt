@@ -2,6 +2,8 @@ JUSTTERMINAL MANUAL, USING IT
 
 This is the first part, about using the terminal. The second part is
 about writing your own programs, manual programming opens it.
+manual sections lists the parts, manual cron or manual storage opens
+only that part.
 
 Up and down arrows or page up and page down move through this text,
 so do 8, 2, 9 and 3 on the numpad or the top row. 7 and 1 go to the
@@ -349,7 +351,7 @@ mod_options opens them. There you can:
 To take the mod out of a playthrough, turn saving off and save first.
 
 
-AND
+GAMES
 
 snake is a game of snake. There's also a train if you type sl.
 The mod options can make a little click for each key.

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Verse;
 
 namespace JustTerminal;
@@ -95,16 +96,85 @@ public static class Programs
         }
     }
 
-    // manual opens the first part, manual programming the second
+    // the manual's parts by their headings, like STORAGE or CRON SCRIPTS
+    public static List<(string part, string title, string text)> Sections()
+    {
+        List<(string, string, string)> found = new List<(string, string, string)>();
+        foreach (KeyValuePair<string, string> m in Manual.OrderBy(m => m.Key == "use.txt" ? 0 : 1))
+        {
+            string[] lines = m.Value.Split('\n');
+            int start = -1;
+            for (int i = 0; i <= lines.Length; i++)
+            {
+                bool heading = i < lines.Length && (i == 0 || lines[i - 1].Trim().Length == 0) && Regex.IsMatch(lines[i], "^[A-Z][A-Z ,&/-]+$");
+                if (!heading && i < lines.Length)
+                {
+                    continue;
+                }
+                // the title at the top isn't a section
+                if (start >= 0 && !lines[start].StartsWith("JUSTTERMINAL MANUAL"))
+                {
+                    found.Add((Path.GetFileNameWithoutExtension(m.Key), lines[start].Trim().ToLowerInvariant(), string.Join("\n", lines, start, i - start).TrimEnd()));
+                }
+                start = i;
+            }
+        }
+        return found;
+    }
+
+    // every section whose heading has the words, cron gives both cron parts
+    public static string Section(string words)
+    {
+        string w = words.Replace('_', ' ').Trim().ToLowerInvariant();
+        List<string> texts = Sections().Where(x => x.title.Contains(w)).Select(x => x.text).ToList();
+        return texts.Count == 0 ? null : string.Join("\n\n\n", texts);
+    }
+
+    // the first words of the headings, for tab
+    public static List<string> SectionWords() =>
+        new[] { "programming", "sections" }.Concat(Sections().Select(x => x.title.Split(' ').First(word => word != "the" && word != "an").TrimEnd(','))).Distinct().ToList();
+
+    // manual opens the first part, manual programming the second, manual cron the parts about cron
     public static void ManualCmd(Shell sh, string[] args)
     {
-        string part = args.Length > 0 && args[0].StartsWith("p", StringComparison.OrdinalIgnoreCase) ? "programming.txt" : "use.txt";
-        if (!Manual.TryGetValue(part, out string text))
+        string word = string.Join(" ", args).Trim().ToLowerInvariant();
+        if (word == "sections")
         {
-            sh.Print(part + " is missing from the mod's Common/Manual", Ink.Bad);
+            foreach ((string part, string title, string _) in Sections())
+            {
+                sh.Out(title.PadRight(28));
+                sh.Print(part, Ink.Dim);
+            }
             return;
         }
-        sh.App = new NanoApp(null, "/manual/" + part, null, text, true);
+        string text;
+        string name;
+        if (word.Length == 0 || word == "use" || word == "programming" || word == "prog")
+        {
+            name = word.StartsWith("prog") ? "programming.txt" : "use.txt";
+            if (!Manual.TryGetValue(name, out text))
+            {
+                sh.Print(name + " is missing from the mod's Common/Manual", Ink.Bad);
+                return;
+            }
+        }
+        else
+        {
+            text = Section(word);
+            name = word.Replace(' ', '_');
+            if (text == null)
+            {
+                sh.Print("no section about " + word + ", manual sections lists them", Ink.Bad);
+                return;
+            }
+        }
+        // a shell nobody types in gets the text, like scripts and other mods
+        if (!sh.CanAsk)
+        {
+            sh.Print(text);
+            return;
+        }
+        sh.App = new NanoApp(null, "/manual/" + name, null, text, true);
     }
 
     // a path to a .sh file, or a program with that name in ~/bin

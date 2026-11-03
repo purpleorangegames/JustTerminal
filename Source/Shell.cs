@@ -195,6 +195,18 @@ public class Shell
 
     // how many lines were ever printed, pipes count from it
     private long printed;
+    public long Printed => printed;
+
+    // the text of the lines printed since Printed was that, for other mods that read what a command said
+    public List<string> TextSince(long mark)
+    {
+        if (current.Count > 0)
+        {
+            NewLine();
+        }
+        int made = (int)Math.Min(printed - mark, lines.Count);
+        return lines.GetRange(lines.Count - made, made).Select(l => string.Concat(l.Select(sp => sp.text))).ToList();
+    }
 
     public void NewLine()
     {

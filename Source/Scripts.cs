@@ -60,7 +60,7 @@ public static class Scripts
     public static readonly int[] Steps = { 1, 2, 3, 4, 6, 12, 24, 48, 72, 168 };
     public static readonly string[] FireModes = { "each", "daily", "once" };
     // these open windows or programs, a script can't use them
-    private static readonly HashSet<string> blocked = new HashSet<string> { "rimtop", "nano", "cron_edit", "edit", "exit", "mod_options", "pin", "reset", "role", "exile", "caravan", "clear" };
+    public static readonly HashSet<string> Blocked = new HashSet<string> { "rimtop", "nano", "cron_edit", "edit", "exit", "mod_options", "pin", "reset", "role", "exile", "caravan", "clear" };
     private static readonly string[] ops = { "<=", ">=", "!=", "==", "<", ">", "=", "has" };
 
     // the script running now, letters use its name
@@ -118,9 +118,10 @@ public static class Scripts
     // by its path from ~ or its file name, .cron can be left out
     public static FileNode FindFile(string word)
     {
-        word = word.Replace('_', ' ');
+        // _ can be a space or a real _ in the file name
+        string spaced = word.Replace('_', ' ');
         List<FileNode> all = AllFiles();
-        foreach (string w in new[] { word, word + ".cron" })
+        foreach (string w in new[] { word, word + ".cron", spaced, spaced + ".cron" })
         {
             FileNode f = all.FirstOrDefault(x => NameOf(x).Equals(w, StringComparison.OrdinalIgnoreCase)) ?? all.FirstOrDefault(x => x.name.Equals(w, StringComparison.OrdinalIgnoreCase));
             if (f != null)
@@ -231,7 +232,7 @@ public static class Scripts
                         {
                             return Bad(s, at + (name.Length == 0 ? "empty command between ;" : name + " isn't a command"));
                         }
-                        if (blocked.Contains(command.name))
+                        if (Blocked.Contains(command.name))
                         {
                             return Bad(s, at + command.Shown + " opens a window, scripts can't use it");
                         }
