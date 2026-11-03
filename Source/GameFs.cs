@@ -409,6 +409,7 @@ public static partial class GameFs
         File(d, "progress", () => (Find.ResearchManager.GetProject()?.ProgressPercent ?? 0f) * 100f);
         File(d, "done", () => DefDatabase<ResearchProjectDef>.AllDefs.Count(r => r.IsFinished));
         File(d, "total", () => DefDatabase<ResearchProjectDef>.AllDefs.Count());
+        ResearchQueueFile(d);
         File(d, "available", () => string.Join(", ", DefDatabase<ResearchProjectDef>.AllDefs.Where(r => r.CanStartNow).Select(r => Word(r.LabelCap.ToString())).OrderBy(n => n)) is string a && a.Length > 0 ? a : "none");
     }
 

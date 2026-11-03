@@ -31,6 +31,13 @@ public static partial class GameFs
         {
             return r.LabelCap + " is done already";
         }
+        if (!r.CanStartNow && DesktopQueue.Here)
+        {
+            // JustDesktop's queue takes what it needs first and starts the first of those
+            DesktopQueue.Add(r);
+            DesktopQueue.StartFirst();
+            return null;
+        }
         if (!r.CanStartNow)
         {
             string need = string.Join(", ", (r.prerequisites ?? new List<ResearchProjectDef>()).Where(p => !p.IsFinished).Select(p => Word(p.LabelCap.ToString())));
@@ -38,6 +45,40 @@ public static partial class GameFs
         }
         Find.ResearchManager.SetCurrentProject(r);
         return null;
+    }
+
+    // with JustDesktop, research then <project> adds to the end of its queue and clear empties it
+    private static void ResearchQueueFile(FileNode d)
+    {
+        if (!DesktopQueue.Here)
+        {
+            return;
+        }
+        Writable(d, "queue", () =>
+        {
+            // only what's queued, the current project shows on its own
+            List<ResearchProjectDef> queued = DesktopQueue.Queued;
+            List<(ResearchProjectDef p, int ticks)> plan = DesktopQueue.Schedule().Where(x => queued.Contains(x.p)).ToList();
+            return plan.Count == 0 ? "empty" : string.Join("\n", plan.Select(x => Word(x.p.LabelCap.ToString()) + " " + (x.ticks < 0 ? "?" : x.ticks.ToStringTicksToPeriod(allowSeconds: false, shortForm: true))));
+        }, value =>
+        {
+            if (Word(value) == "clear")
+            {
+                DesktopQueue.Clear();
+                return null;
+            }
+            ResearchProjectDef r = FindResearch(value);
+            if (r == null)
+            {
+                return "no research called " + value;
+            }
+            if (r.IsFinished)
+            {
+                return r.LabelCap + " is done already";
+            }
+            DesktopQueue.Add(r);
+            return null;
+        });
     }
 
     // prisoners
@@ -326,5 +367,51 @@ public class SavedPlace : IExposable
     {
         Scribe_Values.Look(ref name, "name");
         Scribe_Values.Look(ref cell, "cell");
+    }
+}
+
+// JustDesktop's research queue, found by name so JustTerminal doesn't need JustDesktop
+public static class DesktopQueue
+{
+    private static readonly Type type = AccessTools.TypeByName("JustDesktop.ResearchQueue");
+
+    private static GameComponent Get => type == null ? null : Current.Game?.components.FirstOrDefault(c => c.GetType() == type);
+
+    public static bool Here => Get != null;
+
+    private static List<ResearchProjectDef> Queue => Get == null ? null : Traverse.Create(Get).Field("queue").GetValue<List<ResearchProjectDef>>();
+
+    public static List<ResearchProjectDef> Queued => Queue?.ToList() ?? new List<ResearchProjectDef>();
+
+    public static void Add(ResearchProjectDef r) => Traverse.Create(Get).Method("Add", r).GetValue();
+
+    public static void Clear()
+    {
+        Queue?.Clear();
+    }
+
+    // the first queued one that can start becomes the current project, even when another was picked by hand
+    public static void StartFirst()
+    {
+        ResearchProjectDef first = Queue?.FirstOrDefault(p => p.CanStartNow);
+        if (first != null)
+        {
+            Find.ResearchManager.SetCurrentProject(first);
+        }
+    }
+
+    // each project with the ticks until it's done, the current one first, like JustDesktop's research window
+    public static List<(ResearchProjectDef p, int ticks)> Schedule()
+    {
+        List<(ResearchProjectDef, int)> list = new List<(ResearchProjectDef, int)>();
+        if (Traverse.Create(Get).Method("Schedule").GetValue() is System.Collections.IEnumerable items)
+        {
+            foreach (object o in items)
+            {
+                Traverse t = Traverse.Create(o);
+                list.Add((t.Field("Item1").GetValue<ResearchProjectDef>(), t.Field("Item2").GetValue<int>()));
+            }
+        }
+        return list;
     }
 }

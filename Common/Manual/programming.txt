@@ -220,6 +220,8 @@ These can change too:
   /storage/1/name                   links and zones only
   /storage/1/forbid                 yes or no, for everything in it
   /research/current                 a project from /research/available
+  /research/queue                   with JustDesktop, a project to add
+                                    to the end, or clear
   /prisoners/1/mode                 one of /prisoners/1/modes
   /animals/1/master                 a colonist or none
   /animals/1/slaughter              yes or no
