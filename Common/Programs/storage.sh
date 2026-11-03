@@ -2,7 +2,9 @@
 # storage                      lists them
 # storage save 3 meals         keeps what 3 takes in ~/storage/meals
 # storage apply meals shelves  in edit mode, on every shelf
-# apply takes a number, zones, shelves, all, or a room like kitchen
+# storage name 4 Food shelves  in edit mode, renames a link or a zone
+# apply takes a number, a name with _ for spaces, zones, shelves, all,
+# or a room like kitchen
 # linked shelves are one entry, they share what they take
 
 if args() = 0
@@ -35,9 +37,25 @@ if arg(1) = "save"
   stop
 end
 
+if arg(1) = "name"
+  n = arg(2)
+  if args() < 3 or not exists("/storage/" + n)
+    print bad usage: storage name <number> <new name>
+    stop
+  end
+  s = path("/storage/" + n)
+  if s/kind = "building" and s/linked = 0
+    print bad {n} is a single shelf, only links and zones have names
+    stop
+  end
+  set s/name = rest(3)
+  print good {s/name}
+  stop
+end
+
 if arg(1) = "apply"
   if args() < 3
-    print bad usage: storage apply <name> <number|zones|shelves|all|room>
+    print bad usage: storage apply <name> <number|name|zones|shelves|all|room>
     stop
   end
   if not exists("~/storage/" + arg(2))
@@ -48,7 +66,7 @@ if arg(1) = "apply"
   which = lower(arg(3))
   n = 0
   for s in /storage
-    if which = "all" or which = s/kind + "s" or which = "shelves" and s/kind = "building" or which = s/room or which = name(s)
+    if which = "all" or which = s/kind + "s" or which = "shelves" and s/kind = "building" or which = s/room or which = name(s) or which = replace(lower(s/name), " ", "_")
       set s/filter = filter
       n = n + 1
     end
@@ -57,4 +75,4 @@ if arg(1) = "apply"
   stop
 end
 
-print bad storage, storage save or storage apply
+print bad storage, storage save, storage apply or storage name

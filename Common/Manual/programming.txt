@@ -217,6 +217,7 @@ These can change too:
   /storage/1/priority               low, normal, preferred, important
                                     or critical
   /storage/1/filter                 what it takes, as text
+  /storage/1/name                   links and zones only
 
 Numbered folders take 1 as well as 01.
 
@@ -281,6 +282,7 @@ FUNCTIONS
   cap(text)          first letter upper case
   lower(text), upper(text)
   before(text, "@"), after(text, "@")
+  replace(text, " ", "_")  each space becomes _
   repeat(text, n)    the text n times
   bar(x, n)          a bar as text, for building lines yourself
   rbar(x, n)         the same filling from the right

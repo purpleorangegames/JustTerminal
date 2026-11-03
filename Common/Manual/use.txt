@@ -167,12 +167,15 @@ and priority. What one takes can be kept and put on others:
   storage apply meals shelves   every shelf takes the same
   storage apply meals kitchen   the ones in kitchens
   storage apply meals 5         only 5, zones and all work too
+  storage apply meals group_1   a link or zone by its name
+  storage name 4 Food shelves   renames a link or a zone
 
 apply changes things, so it's for edit mode. The file is plain text,
 nano can change it: hitpoints, quality and one thing on each line.
 Things a shelf can't hold are left out when it's applied there.
 Linked shelves are one entry, with the link's name, since the game
-has them share what they take.
+has them share what they take. Rooms and single shelves have no name
+of their own in the game, so they can't be renamed.
 
 Who can be a name, @ and a group, or all.
 

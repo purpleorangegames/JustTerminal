@@ -347,7 +347,26 @@ public static partial class GameFs
             SlotGroup g = e.groups[0];
             StorageGroup link = e.key as StorageGroup;
             StorageSettings settings = g.Settings;
-            File(f, "name", () => link != null ? link.RenamableLabel : g.parent is Zone z ? z.label : g.parent is Thing t ? t.LabelCap.ToString() : g.parent.SlotYielderLabel());
+            Func<string> name = () => link != null ? link.RenamableLabel : g.parent is Zone z ? z.label : g.parent is Thing t ? t.LabelCap.ToString() : g.parent.SlotYielderLabel();
+            // links and zones can be renamed in the game, single shelves can't
+            IRenameable renamable = (IRenameable)link ?? g.parent as Zone;
+            if (renamable != null)
+            {
+                Writable(f, "name", name, value =>
+                {
+                    string v = value.Trim().Replace('_', ' ');
+                    if (v.Length == 0 || v.Length > 40 || v.Contains('\n'))
+                    {
+                        return "a name is 1 to 40 letters on one line";
+                    }
+                    renamable.RenamableLabel = v;
+                    return null;
+                });
+            }
+            else
+            {
+                File(f, "name", name);
+            }
             File(f, "kind", () => g.parent is Zone ? "zone" : "building");
             File(f, "linked", () => link?.MemberCount ?? 0);
             File(f, "room", () => StorageRoom(g, map));

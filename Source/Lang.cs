@@ -156,7 +156,7 @@ public class Lang
         { "normal", Ink.Normal }, { "dim", Ink.Dim }, { "bright", Ink.Bright }, { "good", Ink.Good }, { "warn", Ink.Warn }, { "warning", Ink.Warn }, { "bad", Ink.Bad }, { "accent", Ink.Accent }
     };
 
-    private static readonly string[] functions = { "pad", "padl", "round", "num", "level", "cap", "lower", "upper", "len", "count", "exists", "path", "min", "max", "arg", "args", "bar", "rbar", "repeat", "prompt", "before", "after", "name", "floor", "cols", "rest", "pawns", "range", "line" };
+    private static readonly string[] functions = { "pad", "padl", "round", "num", "level", "cap", "lower", "upper", "len", "count", "exists", "path", "min", "max", "arg", "args", "bar", "rbar", "repeat", "prompt", "before", "after", "name", "floor", "cols", "rest", "pawns", "range", "line", "replace" };
 
     private readonly List<Stmt> program;
     private readonly string name;
@@ -1252,6 +1252,10 @@ public class Lang
                 Need(2);
                 int b = a[0].IndexOf(a[1], StringComparison.Ordinal);
                 return new Val(b < 0 ? a[0] : a[0].Substring(0, b));
+            case "replace":
+                // every time the second shows up it becomes the third
+                Need(3);
+                return new Val(a[1] == "" ? a[0] : a[0].Replace(a[1], a[2]));
             case "after":
                 Need(2);
                 int f = a[0].IndexOf(a[1], StringComparison.Ordinal);
