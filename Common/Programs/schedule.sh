@@ -1,9 +1,10 @@
 # schedule: show or set the hours, an edit mode command
 # one letter an hour from midnight: s sleep, w work, j joy, a anything, m meditate
-# schedule Tasca, schedule @night wwwwwwssssssssawwwwwjjjj
+# reset is the game's start, nightshift works nights and sleeps 9 to 17
+# schedule Tasca, schedule @night nightshift, schedule all reset
 
 if args() = 0
-  print dim usage: schedule <who> [24 letters]
+  print dim usage: schedule <who> [reset|nightshift|24 letters]
   stop
 end
 out {pad("", 14)}

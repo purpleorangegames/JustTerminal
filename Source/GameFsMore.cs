@@ -103,9 +103,16 @@ public static partial class GameFs
             Writable(f, "schedule", () => new string(Enumerable.Range(0, 24).Select(h => hours.FirstOrDefault(x => x.def() == p.timetable.GetAssignment(h)).letter is char c && c != '\0' ? c : 'a').ToArray()), value =>
             {
                 string v = value.Trim().ToLowerInvariant().Replace(" ", "");
+                // the game's own start, and the same turned around for working nights
+                v = v switch
+                {
+                    "reset" => "ssssssaaaaaaaaaaaaaaaass",
+                    "nightshift" => "wwwwwwwwjssssssssaaajwww",
+                    _ => v
+                };
                 if (v.Length != 24 || v.Any(c => hours.All(x => x.letter != c || x.def() == null)))
                 {
-                    return "schedule is 24 letters, one an hour from midnight: s sleep, w work, j joy, a anything" + (TimeAssignmentDefOf.Meditate != null ? ", m meditate" : "");
+                    return "schedule is reset, nightshift, or 24 letters, one an hour from midnight: s sleep, w work, j joy, a anything" + (TimeAssignmentDefOf.Meditate != null ? ", m meditate" : "");
                 }
                 for (int h = 0; h < 24; h++)
                 {

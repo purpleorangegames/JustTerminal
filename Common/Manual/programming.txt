@@ -209,7 +209,8 @@ the reason in error, or none when it went fine:
 These can change too:
   /time/speed                       paused, normal, fast or superfast
   p/drafted                         yes or no
-  p/schedule                        24 letters, s w j a m
+  p/schedule                        24 letters s w j a m, reset or
+                                    nightshift
   /growing/1/sow                    yes or no
   /bills/1/list/1/suspended         yes or no
   /bills/1/list/1/count             how many to make

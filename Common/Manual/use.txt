@@ -154,6 +154,8 @@ help there to see them, exit leaves.
   schedule @night wwwwwwssssssssawwwwwjjjj
                                   s sleep, w work, j joy, a anything,
                                   m meditate, one letter an hour
+  schedule @night nightshift      works nights, sleeps 9 to 17
+  schedule all reset              back to the game's start
 
 
 STORAGE
