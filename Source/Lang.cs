@@ -672,9 +672,9 @@ public class Lang
     private static Expr Compare(Parser p)
     {
         Expr a = Sum(p);
-        while (p.at < p.tokens.Count && p.tokens[p.at].type == T.Op && p.tokens[p.at].text is "<" or ">" or "<=" or ">=" or "=" or "==" or "!=")
+        while (p.at < p.tokens.Count && (p.tokens[p.at].type == T.Op && p.tokens[p.at].text is "<" or ">" or "<=" or ">=" or "=" or "==" or "!=" || p.IsName("has")))
         {
-            string op = p.tokens[p.at++].text;
+            string op = p.tokens[p.at++].text.ToLowerInvariant();
             a = new Bin { op = op, a = a, b = Sum(p) };
         }
         return a;

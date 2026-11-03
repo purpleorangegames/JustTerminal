@@ -82,7 +82,8 @@ isn't a number. a/b is a path, so put spaces around / to divide.
   name = "hello " + p/name
 
 Comparing: = (or ==), !=, <, >, <=, >=. Numbers compare as numbers,
-text ignores upper and lower case.
+text ignores upper and lower case. has is true when the text has the
+other one in it, like if p/genes has "fire spew".
 and, or and not join them:
 
   if p/mood < 25 and p/downed = no

@@ -25,6 +25,10 @@ public static class GameFs
         {
             return top;
         }
+        if (Scripts.EventWho != null)
+        {
+            Dir("event", top, EventFiles);
+        }
         Dir("colony", top, Colony);
         Dir("pawns", top, Pawns);
         Dir("health", top, Health);
@@ -197,6 +201,8 @@ public static class GameFs
         File(f, "job", () => pawn.jobs?.curDriver?.GetReport() is string r && r.Length > 0 ? r : "idle");
         File(f, "doing", () => Commands.Doing(pawn));
         File(f, "where", () => Commands.Where(pawn));
+        File(f, "genes", () => Genes(pawn));
+        File(f, "xenotype", () => Xenotype(pawn));
         File(f, "traits", () => pawn.story?.traits == null || pawn.story.traits.allTraits.Count == 0 ? "none" : string.Join(", ", pawn.story.traits.allTraits.Select(t => t.LabelCap)));
         PawnSettings(f, pawn);
         if (pawn.skills != null)
@@ -455,6 +461,36 @@ public static class GameFs
             File(f, "relation", () => t.town.Faction == null ? "none" : t.town.Faction.PlayerRelationKind.GetLabel());
             File(f, "distance", () => t.tiles, "0");
         });
+    }
+
+    private static string Genes(Pawn p)
+    {
+        string genes = p.genes == null ? "" : string.Join(", ", p.genes.GenesListForReading.Select(g => g.LabelCap.ToString()));
+        return genes.Length == 0 ? "none" : genes;
+    }
+
+    private static string Xenotype(Pawn p) => p.genes?.Xenotype != null || p.genes?.CustomXenotype != null ? p.genes.XenotypeLabelCap.ToString() : "none";
+
+    // what a when script's event was about, and the pawn it happened to
+    private static void EventFiles(FileNode d)
+    {
+        string who = Scripts.EventWho, what = Scripts.EventWhat;
+        Pawn p = Scripts.EventPawn;
+        File(d, "who", () => who.Length == 0 ? "none" : who);
+        File(d, "what", () => what ?? "none");
+        if (p == null)
+        {
+            return;
+        }
+        File(d, "name", () => p.LabelShort);
+        File(d, "kind", () => p.KindLabel);
+        File(d, "faction", () => p.Faction?.Name ?? "none");
+        File(d, "hostile", () => p.HostileTo(Faction.OfPlayer));
+        File(d, "gender", () => p.gender.GetLabel());
+        File(d, "age", () => p.ageTracker.AgeBiologicalYears);
+        File(d, "genes", () => Genes(p));
+        File(d, "xenotype", () => Xenotype(p));
+        File(d, "traits", () => p.story?.traits == null || p.story.traits.allTraits.Count == 0 ? "none" : string.Join(", ", p.story.traits.allTraits.Select(t => t.LabelCap)));
     }
 
     private static bool Breaking(Pawn p) =>

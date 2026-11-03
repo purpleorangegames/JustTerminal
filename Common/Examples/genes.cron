@@ -1,0 +1,7 @@
+# a letter when someone with a gene shows up, change fire spew to the one you want
+# ls /pawns/<name> shows your colonists' genes, to see how they're written
+
+when arrive
+fire each
+if /event/genes has "fire spew"
+action letter {who} has fire spew, {event}

@@ -10,12 +10,12 @@ namespace JustTerminal;
 // things that happen, for cron scripts with when instead of every
 public static class Events
 {
-    public static readonly string[] Names = { "raid", "downed", "break", "sick", "death", "letter", "trader" };
+    public static readonly string[] Names = { "raid", "arrive", "downed", "break", "sick", "death", "letter", "trader" };
 
     // set while a script sends a letter, so it doesn't count
     public static bool Quiet;
 
-    private static readonly List<(string name, string who, string what)> queue = new List<(string, string, string)>();
+    private static readonly List<(string name, string who, string what, Pawn pawn)> queue = new List<(string, string, string, Pawn)>();
 
     // what the last look found, to see what's new
     private static Game seenGame;
@@ -25,8 +25,16 @@ public static class Events
     private static HashSet<Pawn> breaking = new HashSet<Pawn>();
     private static HashSet<Hediff> diseases = new HashSet<Hediff>();
     private static HashSet<Pawn> alive = new HashSet<Pawn>();
+    private static HashSet<Pawn> outsiders = new HashSet<Pawn>();
 
-    public static void Add(string name, string who, string what) => queue.Add((name, who, what));
+    public static void Add(string name, string who, string what, Pawn pawn = null) => queue.Add((name, who, what, pawn));
+
+    // who came, like trader from Rope Confederation, raider from Wefwe, wanderer
+    private static string Came(Pawn p)
+    {
+        string what = MapCommands.Why(p) ?? (p.HostileTo(Faction.OfPlayer) ? "raider" : p.Faction == null ? "wanderer" : "visitor");
+        return p.Faction != null ? what + " from " + p.Faction.Name : what;
+    }
 
     private static string Who(Pawn p) => p.LabelShort.Replace(' ', '_');
 
@@ -48,11 +56,11 @@ public static class Events
         {
             return;
         }
-        List<(string name, string who, string what)> now = queue.ToList();
+        List<(string name, string who, string what, Pawn pawn)> now = queue.ToList();
         queue.Clear();
-        foreach ((string name, string who, string what) in now)
+        foreach ((string name, string who, string what, Pawn pawn) in now)
         {
-            Scripts.RunEvent(name, who, what);
+            Scripts.RunEvent(name, who, what, pawn);
         }
     }
 
@@ -64,6 +72,8 @@ public static class Events
         HashSet<Pawn> nowDowned = new HashSet<Pawn>(colonists.Where(p => p.Downed));
         HashSet<Pawn> nowBreaking = new HashSet<Pawn>(colonists.Where(p => p.InMentalState));
         HashSet<Hediff> nowDiseases = new HashSet<Hediff>(colonists.SelectMany(p => p.health.hediffSet.hediffs).Where(h => h.def.makesSickThought));
+        // people from outside on our maps: visitors, traders, raiders, wanderers
+        HashSet<Pawn> nowOutsiders = new HashSet<Pawn>(MapCommands.OnMaps(p => p.RaceProps.Humanlike && !p.Dead && p.Faction != Faction.OfPlayer && !p.IsPrisonerOfColony && !p.IsSlaveOfColony));
         // the first look after loading only learns how things are
         bool first = seenGame != Current.Game;
         if (!first)
@@ -76,21 +86,25 @@ public static class Events
             {
                 Add("trader", "", traderCount.ToString());
             }
+            foreach (Pawn p in nowOutsiders.Where(p => !outsiders.Contains(p)))
+            {
+                Add("arrive", Who(p), Came(p), p);
+            }
             foreach (Pawn p in nowDowned.Where(p => !downed.Contains(p)))
             {
-                Add("downed", Who(p), "downed");
+                Add("downed", Who(p), "downed", p);
             }
             foreach (Pawn p in nowBreaking.Where(p => !breaking.Contains(p)))
             {
-                Add("break", Who(p), p.MentalStateDef?.label ?? "mental break");
+                Add("break", Who(p), p.MentalStateDef?.label ?? "mental break", p);
             }
             foreach (Hediff h in nowDiseases.Where(h => !diseases.Contains(h)))
             {
-                Add("sick", Who(h.pawn), h.LabelBase);
+                Add("sick", Who(h.pawn), h.LabelBase, h.pawn);
             }
             foreach (Pawn p in alive.Where(p => p.Dead))
             {
-                Add("death", Who(p), "died");
+                Add("death", Who(p), "died", p);
             }
         }
         seenGame = Current.Game;
@@ -100,6 +114,7 @@ public static class Events
         breaking = nowBreaking;
         diseases = nowDiseases;
         alive = new HashSet<Pawn>(colonists);
+        outsiders = nowOutsiders;
     }
 }
 

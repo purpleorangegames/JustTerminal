@@ -179,7 +179,7 @@ changed by you. ls and cat work there like anywhere else.
   /examples   cron scripts and programs, example copies them to ~
   /colony     name, wealth, mood, day, hour, season, temp, weather...
   /pawns      a folder for each colonist: mood, health, food, rest,
-              joy, pain, job, downed, drafted, idle, skills and more
+              joy, pain, job, genes, xenotype, skills and more
   /health     how many are bleeding, sick or downed, and list with
               the wounds and diseases of everyone of ours
   /danger     count, enemies, predators, closest, and list
@@ -221,6 +221,8 @@ every is how often it checks, like 1h, 6h or 2d. Instead of every a
 script can have when, then it runs the moment something happens:
 
   when raid     enemies show up on one of your maps
+  when arrive   someone from outside shows up: traders, visitors,
+                raiders, wanderers, one event for each of them
   when downed   a colonist goes down
   when break    a colonist has a mental break
   when sick     a colonist gets a disease
@@ -228,8 +230,21 @@ script can have when, then it runs the moment something happens:
   when letter   a letter arrives
   when trader   traders show up
 
-In those {who} is the colonist it happened to and {event} what
-happened, like the disease or the letter's name.
+In those {who} is who it happened to and {event} what happened, like
+the disease, the letter's name or trader from Rope Confederation.
+
+While a when script runs, /event has the pawn it happened to: name,
+kind, faction, hostile, gender, age, genes, xenotype and traits. So a
+script can look at that one pawn:
+
+  when arrive
+  fire each
+  if /event/genes has "fire spew"
+  action letter {who} has fire spew, {event}
+
+has is true when the text has the word anywhere in it, it's good for
+lists like genes and traits. cron test shows the /event lines as only
+there when it happens.
 
 fire is each (every time it passes), daily (once a day at most) or
 once (it fires and turns itself off).
@@ -237,6 +252,7 @@ Then the if lines, all of them have to pass.
 Then one action, with the commands to run. ; runs more than one.
 
 In an if, * stands for every folder there, like /pawns/*/mood < 25.
+The ifs compare with < > <= >= = != or has.
 In the action {value} is the first if's value, {name} and {names} who
 matched the *, {count} how many, and a path in {} reads that path.
 

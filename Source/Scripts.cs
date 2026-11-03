@@ -61,10 +61,14 @@ public static class Scripts
     public static readonly string[] FireModes = { "each", "daily", "once" };
     // these open windows or programs, a script can't use them
     private static readonly HashSet<string> blocked = new HashSet<string> { "rimtop", "nano", "cron_edit", "edit", "exit", "mod_options", "pin", "reset", "role", "exile", "caravan", "clear" };
-    private static readonly string[] ops = { "<=", ">=", "!=", "==", "<", ">", "=" };
+    private static readonly string[] ops = { "<=", ">=", "!=", "==", "<", ">", "=", "has" };
 
     // the script running now, letters use its name
     public static Script Running;
+    // who a when script's event happened to, /event shows them while it runs
+    public static Pawn EventPawn;
+    public static string EventWho;
+    public static string EventWhat;
 
     public const string Template =
         "# every: how often it checks, like 1h, 6h or 2d\n" +
@@ -284,8 +288,8 @@ public static class Scripts
         {
             return "paths in scripts start with / or ~";
         }
-        // a * can stand for something not there now, a plain path has to be there
-        if (!path.Contains('*') && GameFs.Expand(path).Count == 0)
+        // a * can stand for something not there now, a plain path has to be there, /event only is when something happens
+        if (!path.Contains('*') && !path.StartsWith("/event") && GameFs.Expand(path).Count == 0)
         {
             return "nothing at " + path;
         }
@@ -296,6 +300,11 @@ public static class Scripts
     public static bool Compare(string a, string op, string b)
     {
         a = a.Trim();
+        if (op == "has")
+        {
+            // the text has it somewhere, like a gene in the list of genes
+            return a.IndexOf(b.Trim(), StringComparison.OrdinalIgnoreCase) >= 0;
+        }
         if (float.TryParse(a, NumberStyles.Float, CultureInfo.InvariantCulture, out float x) && float.TryParse(b, NumberStyles.Float, CultureInfo.InvariantCulture, out float y))
         {
             return op switch
@@ -324,6 +333,13 @@ public static class Scripts
         Dictionary<string, string> firstValues = null;
         foreach (Cond c in s.ifs)
         {
+            // /event is only there while a when script runs for something that happened
+            if (c.path.StartsWith("/event") && EventWho == null)
+            {
+                check.lines.Add((c, "only there when it happens", false));
+                check.pass = false;
+                continue;
+            }
             List<(FileNode node, string star)> found = GameFs.Expand(c.path);
             bool star = c.path.Contains('*');
             if (found.Count == 0 && !star)
@@ -452,7 +468,24 @@ public static class Scripts
     }
 
     // something happened, the when scripts for it run now
-    public static void RunEvent(string name, string who, string what)
+    public static void RunEvent(string name, string who, string what, Pawn pawn = null)
+    {
+        EventPawn = pawn;
+        EventWho = who;
+        EventWhat = what;
+        try
+        {
+            RunEventScripts(name, who, what);
+        }
+        finally
+        {
+            EventPawn = null;
+            EventWho = null;
+            EventWhat = null;
+        }
+    }
+
+    private static void RunEventScripts(string name, string who, string what)
     {
         foreach (FileNode f in AllFiles())
         {

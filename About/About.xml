@@ -35,7 +35,7 @@ There are files too, kept in the save and not on your computer: ls, cd, mkdir, c
 
 Files that end in .sh are programs. Most commands are programs you can read in /bin, copy to ~/bin and change, or you can write your own. The language is simple: for, if, print, and set to change things in edit mode.
 
-Files that end in .cron are cron scripts. They check something every few hours, or run when something happens like a raid or a colonist going down, and then send a message, a letter or run a command or a program. Like this one:
+Files that end in .cron are cron scripts. They check something every few hours, or run when something happens like a raid, a colonist going down or someone with a certain gene showing up, and then send a message, a letter or run a command or a program. Like this one:
 
 every 2h
 fire daily
