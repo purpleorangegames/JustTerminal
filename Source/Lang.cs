@@ -10,8 +10,12 @@ namespace JustTerminal;
 
 public class LangError : Exception
 {
-    public LangError(string message) : base(message)
+    // the game said no to a value, the player gets the reason without the program's line
+    public bool refused;
+
+    public LangError(string message, bool refused = false) : base(message)
     {
+        this.refused = refused;
     }
 }
 
@@ -828,7 +832,7 @@ public class Lang
         }
         catch (LangError e)
         {
-            sh.Print($"{name} line {line}: {e.Message}", Ink.Bad);
+            sh.Print(e.refused ? e.Message : $"{name} line {line}: {e.Message}", Ink.Bad);
         }
     }
 
@@ -975,7 +979,7 @@ public class Lang
         }
         if (error != null)
         {
-            throw new LangError(error);
+            throw new LangError(error, true);
         }
         // the next reads see the change
         top = GameFs.Top();

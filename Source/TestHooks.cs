@@ -10,7 +10,7 @@ namespace JustTerminal;
 
 // for testing without touching the game, all off unless the environment variable is set:
 // JTM_TEST_LOAD=<save>    loads that save from the main menu and pauses it
-// JTM_TEST_CMDS=<a;b;c>   then opens the terminal and runs each command, key:<KeyCode> presses a key, type:<text> types, link:N links the first N storage buildings, waitapp waits while a program runs, answer:<text> answers only when asked, break:<name> starts a sad wander, rclick:x,y rtype:<text> rkey:<Key> go through the game's real input, pin, tab:<def>, clickmap
+// JTM_TEST_CMDS=<a;b;c>   then opens the terminal and runs each command, key:<KeyCode> presses a key, type:<text> types, link:N links the first N storage buildings, waitapp waits while a program runs, answer:<text> answers only when asked, break:<name> starts a sad wander, modsettings:<name> opens a mod's options, rclick:x,y rtype:<text> rkey:<Key> go through the game's real input, pin, tab:<def>, clickmap
 // JTM_TEST_SHOTS=<dir>    with a screenshot after each in dir, and quits
 // JTM_TEST_RUN=<frames>   lets time run that many frames at the fastest speed first
 // JTM_TEST_SAVEAS=<name>  then saves the game with that name
@@ -261,6 +261,15 @@ public static class TestHooks
                     foreach (IStorageGroupMember m in members)
                     {
                         m.SetStorageGroup(group);
+                    }
+                }
+                else if (list[step].StartsWith("modsettings:"))
+                {
+                    // a mod's options window, by the name it shows in the mod settings list
+                    Mod mod = LoadedModManager.ModHandles.FirstOrDefault(m => m.SettingsCategory() == list[step].Substring(12));
+                    if (mod != null)
+                    {
+                        Find.WindowStack.Add(new Dialog_ModSettings(mod));
                     }
                 }
                 else if (list[step] == "waitapp")

@@ -29,7 +29,9 @@ public class JustTerminalSettings : ModSettings
     public string font = "";
 
     // text
-    public const string DefaultWelcome = "JustTerminal 0.1\nType help to see the commands, manual to read the manual.";
+    // {version} becomes the mod's version from About.xml
+    public const string DefaultWelcome = "JustTerminal {version}\nType help to see the commands, manual to read the manual.";
+    private const string OldWelcome = "JustTerminal 0.1\nType help to see the commands, manual to read the manual.";
     public string welcome = DefaultWelcome;
     public string promptUser = "rim";
     // empty uses the colony name
@@ -70,6 +72,10 @@ public class JustTerminalSettings : ModSettings
             aliases ??= new Dictionary<string, string>();
             font ??= "";
             welcome ??= DefaultWelcome;
+            if (welcome == OldWelcome)
+            {
+                welcome = DefaultWelcome;
+            }
             promptUser ??= "rim";
             promptHost ??= "";
             startup ??= "";
@@ -98,6 +104,9 @@ public class JustTerminalMod : Mod
     }
 
     public static void Save() => Instance.WriteSettings();
+
+    // the welcome lines with the version filled in
+    public static string Welcome => (Settings.welcome ?? "").Replace("\\n", "\n").Replace("{version}", Instance.Content.ModMetaData.ModVersion ?? "");
 
     private static void DesktopReset(MainButtonDef def)
     {

@@ -176,7 +176,7 @@ public class Shell
     private void Banner()
     {
         // the welcome text from the mod options, first line bright
-        string[] lines = (JustTerminalMod.Settings.welcome ?? "").Replace("\\n", "\n").Split('\n');
+        string[] lines = JustTerminalMod.Welcome.Split('\n');
         for (int i = 0; i < lines.Length; i++)
         {
             Print(lines[i], i == 0 ? Ink.Bright : Ink.Dim);

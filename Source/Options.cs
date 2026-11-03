@@ -342,7 +342,7 @@ public static class Options
         preview.Resize((int)(area.width / cell.x), (int)(area.height / cell.y));
         preview.Clear();
         int y = 0;
-        string[] welcome = (Set.welcome ?? "").Replace("\\n", "\n").Split('\n');
+        string[] welcome = JustTerminalMod.Welcome.Split('\n');
         foreach (string line in welcome)
         {
             preview.Write(0, y++, line, y == 1 ? Ink.Bright : Ink.Dim);
