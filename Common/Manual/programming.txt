@@ -1,0 +1,327 @@
+JUSTTERMINAL MANUAL, PROGRAMMING
+
+This is the second part, about writing programs. manual opens the
+first part, about using the terminal.
+
+Up and down arrows or page up and page down move through this text,
+so do 8, 2, 9 and 3 on the numpad or the top row. esc or q closes it.
+
+
+PROGRAMS
+
+A file that ends in .sh is a program. Most of the commands that show
+something are programs too, they're in /bin and you can read them:
+
+  ls /bin
+  less /bin/idle.sh
+
+The ones without .sh in /bin are built into the mod, those can't be
+read or copied.
+
+To change one, copy it to ~/bin, then change your copy:
+
+  cp /bin/idle.sh ~/bin
+  nano ~/bin/idle.sh
+
+Now idle runs your copy. rm ~/bin/idle.sh goes back to the mod's.
+
+A new program in ~/bin runs by its name, ~/bin/hello.sh runs with
+hello. Anywhere else it runs by its path, like notes/hello.sh or
+~/test.sh. nano something.sh starts one with an example, and saving
+tells you if it reads fine.
+
+Programs only read the game's folders and run terminal commands, they
+can't touch your computer. Edit commands only work if you are in edit
+mode when you run the program.
+
+
+LINES
+
+One thing per line. Spaces at the start don't matter, they only make
+it easier to read. Lines that start with # are notes for whoever
+reads it.
+
+  name = value       keep a value
+  for x in folder    go over what's in a folder, end closes it
+  if something       do this only if it's true
+  else if, else      the other cases, end closes the if
+  print text         write a line
+  out text           write without going to the next line
+  meter value width  btop squares
+  bar value width    a bar like the needs have
+  run command        run a terminal command
+  set path = value   change something in the game, edit mode only
+  write path = text  put text in a file in ~, replacing what's there
+  append path = text add text as a new line at the end of a file in ~
+  ask name question  wait for the player to type an answer
+  try line           if the line goes wrong, warn and keep going
+  stop               end the program here
+
+
+VALUES
+
+Everything is text. Text that reads as a number works as a number.
+
+  5, 2.5                numbers
+  "hello there"         text, in quotes
+  yes, no, none         read as themselves, no quotes needed
+  /stock/food           what's in that game file
+  n                     a value you kept with n = ...
+  p/mood                the file mood in the folder p is
+
+Any other word without quotes is a value you kept, so text you compare
+with goes in quotes:
+
+  if s/passion = "major"
+
+Math: + - * / and %, with ( ) to group. + joins text when one side
+isn't a number. a/b is a path, so put spaces around / to divide.
+
+  n = n + 1
+  full = (h/severity * 100 / h/max)
+  name = "hello " + p/name
+
+Comparing: = (or ==), !=, <, >, <=, >=. Numbers compare as numbers,
+text ignores upper and lower case.
+and, or and not join them:
+
+  if p/mood < 25 and p/downed = no
+
+
+FOLDERS AND FOR
+
+for goes over the folders or files inside a folder:
+
+  for p in /pawns
+    print {p/name} {p/mood}
+  end
+
+p is the folder's name, and p/mood reads mood inside it.
+A path with * works too, it goes over everything it matches:
+
+  for m in /pawns/*/mood
+    print {m}
+  end
+
+A value that came from a folder keeps where it came from, so this
+works too:
+
+  c = /colony
+  print {c/name}
+
+path() makes one from text, like path("/pawns/" + arg(1)).
+
+{name} inside a path puts a value you kept there:
+
+  job = "mine"
+  print {p/work/{job}}
+
+pawns() goes over colonists the way edit commands read them, a name,
+@ and a group, or all:
+
+  for p in pawns("@miners")
+    print {p/name}
+  end
+
+range() counts: range(5) is 0 to 4, range(2, 5) is 2 to 4 and
+range(0, 10, 3) is 0, 3, 6 and 9.
+
+
+IF
+
+  if count = 0
+    print good everyone is busy
+  else if count < 3
+    print warn a few with nothing to do
+  else
+    print bad {count} with nothing to do
+  end
+
+no, none, 0 and empty text are false, the rest is true.
+
+
+PRINT AND OUT
+
+print writes a line, out writes and stays on the same line, so a line
+can have more than one color:
+
+  out bright {pad(p/name, 14)}
+  print dim {p/job}
+
+The first word can be a color: normal, dim, bright, good, warn, bad
+or accent. [ ] with a value picks the color while it runs:
+
+  ink = "good"
+  if p/mood < 25
+    ink = "bad"
+  end
+  print [ink] {p/name}
+
+Text is written as it is, with {} putting a value in it. Spaces after
+the color word stay, so out bad   x writes two spaces before x.
+Spaces at the end of a line are lost, put them in {" "} when you need
+them. print alone writes an empty line.
+
+
+METER AND BAR
+
+  meter p/health 10        10 squares, colored by how full
+  bar p/mood 20            a bar 20 wide with dots behind it
+  bar p/mood 20 good       always the good color
+
+The value goes from 0 to 100. If it's more than one word put it in
+( ), like bar (s/level * 5) 20.
+
+
+CHANGING THINGS
+
+set changes the game, the same way the edit commands do:
+
+  set p/medicine = "herbal"
+  set p/work/mine = 1
+  set p/area = "home"
+  set p/policy/food = "lavish"
+  set /groups/miners = "Drill Wolf Kovul"
+  set /groups/miners = none
+
+It only works when the program runs in edit mode, and only on the files
+ls shows with can change next to them. Everything else under / only
+reads.
+
+The value is checked first, like the game would. A wrong one stops the
+program and says what would work:
+
+  area.sh line 30: no area called hom where Tasca is, the areas are
+  home, kitchen and unrestricted
+
+Put try in front when one going wrong shouldn't stop the rest, like a
+colonist who is away. try writes the problem as a warning and keeps
+the reason in error, or none when it went fine:
+
+  for p in pawns("all")
+    try set p/area = "home"
+    if error = none
+      print {p/name} stays home now
+    end
+  end
+
+The choices are in the game's folders too:
+  /work       the jobs, in the work tab's order
+  /care       none, nomeds, herbal, industrial and best
+  /areas      the areas on the home map
+  /policies   apparel, food, drugs and reading, each with its policies
+  /groups     each group with who is in it
+
+A cron script runs its action in edit mode, so it can run a program
+that changes things, and a when script can do it right when something
+happens. That's how a script can switch everyone to the
+simple meals policy when food is low.
+
+
+WRITING FILES
+
+write and append keep things in your files, like a log a cron script
+adds to:
+
+  line = "day " + /colony/day + ", " + /danger/enemies + " enemies"
+  append ~/log/raids = line
+
+They only write in ~. The folder has to be there, mkdir it first.
+The file is made if it isn't there. Files can be 64 KB.
+
+
+ASK
+
+ask waits for the player and keeps what they typed:
+
+  ask answer change everyone to herbal? y/n
+  if answer = "y"
+    run medicine all herbal
+  end
+
+ask goes at the top of a program, not inside for or if, and it doesn't
+work in cron scripts or watch, there's no one to answer there.
+
+
+RUN AND STOP
+
+run writes what a command writes, like typing it:
+
+  run pawns
+  run medicine {p} herbal
+  run pawns | grep Sleeping
+
+run only finds edit commands in edit mode.
+stop ends the program.
+
+
+FUNCTIONS
+
+  pad(text, n)       text filled with spaces to n wide, cut if longer
+  padl(text, n)      the same with the spaces on the left
+  round(x)           round(x, 1) keeps one decimal
+  num(x)             74449 as 74,449
+  min(a, b), max(a, b)
+  len(text)          how long it is
+  cap(text)          first letter upper case
+  lower(text), upper(text)
+  before(text, "@"), after(text, "@")
+  repeat(text, n)    the text n times
+  bar(x, n)          a bar as text, for building lines yourself
+  rbar(x, n)         the same filling from the right
+  level(x)           "bad", "warn" or "good" for 0 to 100, for [ ]
+  count(path)        how many things are in a folder, or match a *
+  exists(path)       yes if something is there
+  path(text)         the folder or file at a path made from text
+  name(x)            the last part of where x came from, for files
+                     in a for, like name(w) gives mine for /work/mine
+  floor(x)           x rounded down
+  arg(1)             the first word typed after the program's name
+  args()             how many words were typed after it
+  rest(2)            every word from the second one on
+  cols()             how wide the screen is
+  prompt()           the prompt, like rim@colony
+  pawns(who)         colonists, only in a for
+  range(...)         numbers, only in a for
+
+
+WHEN IT GOES WRONG
+
+The error says the program, the line and what's wrong:
+
+  b.sh line 2: nothing at /pawns/Barskow/nope
+
+A program stops after 100000 steps, so a mistake can't freeze the
+game. Programs running each other stop 8 deep.
+
+
+CRON SCRIPTS AND PROGRAMS
+
+.cron scripts are the small kind: every, fire, if lines and one
+action, no loops. They're in the first part, manual. When a cron
+script needs more, its action can run a program:
+
+  action mycheck
+
+
+AN EXAMPLE
+
+~/bin/hungry.sh, then type hungry:
+
+  # who is hungry
+  n = 0
+  for p in /pawns
+    if p/food != none and p/food < 30
+      out warn {pad(p/name, 14)}
+      bar p/food 10
+      print
+      n = n + 1
+    end
+  end
+  if n = 0
+    print good nobody is hungry
+  end
+
+Read the ones in /bin for more, critical.sh, checkup.sh and
+factions.sh do the most. work.sh, medicine.sh, area.sh, policy.sh and
+group.sh show how the edit commands change things.

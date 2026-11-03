@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>JustTerminal</name>
+  <author>tiagocc0</author>
+  <packageId>tiagocc0.JustTerminal</packageId>
+  <modVersion>0.1.0</modVersion>
+  <url>https://github.com/purpleorangegames/JustTerminal</url>
+  <supportedVersions>
+    <li>1.7</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+      <downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+  </loadAfter>
+  <description>A terminal inside the game, with an old CRT screen look. Type commands to see your colonists, factions and the colony.
+
+Click the terminal button at the bottom bar to open it. Type help to see the commands, help and a command name shows examples for it. manual opens the manual, take your time with it, manual programming is the second part about writing your own programs.
+
+pawns, pawn, colony, fetch, date, factions, critical (wounds nobody treated yet), checkup (diseases and treated wounds), visitors, danger (enemies and predators) and idle show what's going on. Pipes work too, like pawns | grep Sleeping, and watch 5 danger runs it again every 5 seconds.
+
+rimtop (or top) is a colony monitor like btop: mood, temperature and wealth graphs, power and weather, stock, and the colonists listed like processes. Enter or a click shows a colonist's details, tab switches between the four boxes and one of them on the whole screen.
+
+graph draws graphs over time: temperature outside (with a forecast), wealth, mood of the colony or of one colonist, food, colonists and raid points.
+
+The normal commands only read. Type edit to go into edit mode, the screen turns red and the commands there change your colonists: work priorities, medicine, allowed area, policies, ideoligion roles (it opens the ritual), exile and caravans. You can make groups, like group miners Drill Wolf Kovul and then work @miners mining 1.
+
+There are files too, kept in the save and not on your computer: ls, cd, mkdir, cat, less, cp, mv, rm and nano to write them. The folders under / are the game itself, read only, like cat /stock/food or ls /pawns/Tasca.
+
+Most commands are small programs you can read in /bin, copy to ~/bin and change, or write your own. The language is simple: for, if, print, and set to change things in edit mode.
+
+Cron scripts check something every few hours, or when something happens like a raid or a colonist going down, and then send a message, a letter or run a command. cron_edit lists them to turn on and off.
+
+The mod options can export the files and programs of a game and import them into another.
+
+Click the little pin light on the top of the frame and it stays open when you click the map, and you can drag it around. In the mod options you can make your own theme: colors, effects, font, text size, the welcome text, commands to run when it starts and your own names for the commands.
+
+There's also snake.
+
+You can add it mid playthrough. To remove it from a playthrough, turn off saving in the mod options and save first.
+
+The font is DejaVu Sans Mono, its license is in Common/Fonts.
+
+AI was used to help code/fix issues</description>
+</ModMetaData>

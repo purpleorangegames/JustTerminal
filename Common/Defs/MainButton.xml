@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <MainButtonDef>
+    <defName>JTM_Terminal</defName>
+    <label>terminal</label>
+    <description>Open the terminal. Type help to see the commands.</description>
+    <tabWindowClass>JustTerminal.MainTabWindow_Terminal</tabWindowClass>
+    <workerClass>JustTerminal.MainButtonWorker_Terminal</workerClass>
+    <order>103</order>
+    <minimized>true</minimized>
+    <iconPath>UI/JustTerminal/Terminal</iconPath>
+  </MainButtonDef>
+
+</Defs>

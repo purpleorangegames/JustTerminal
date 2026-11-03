@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <JTM_EditRed>Red screen in edit mode</JTM_EditRed>
+  <JTM_EditRedDesc>In edit mode the commands change the game, the screen turns red so you know. Off, it keeps your color and only the prompt changes.</JTM_EditRedDesc>
+  <JTM_SaveRecordings>Keep the graph recordings, groups and files in the save</JTM_SaveRecordings>
+  <JTM_SaveRecordingsDesc>The mood and food graphs use one value each hour that the mod keeps.
+
+On, they go in the save so the graphs keep their history.
+
+Off, nothing from this mod goes in the save. The graphs still work, but they start over each time you load, and so do the groups from edit mode and the files made in the terminal. Turn it off and save if you want to remove the mod later.</JTM_SaveRecordingsDesc>
+  <JTM_ClearRecordings>Delete the recordings of this game</JTM_ClearRecordings>
+  <JTM_ClearRecordingsConfirm>Delete all the graph recordings of this game? The graphs that come from the game itself (wealth, colonists, raid points) stay.</JTM_ClearRecordingsConfirm>
+  <JTM_ClearedSaving>Deleted. They start again from now, save the game to remove the old ones from the save file too.</JTM_ClearedSaving>
+  <JTM_ClearedNotSaving>Deleted. Save the game and the save file has nothing from this mod.</JTM_ClearedNotSaving>
+  <JTM_NoGame>Load a game to delete its recordings.</JTM_NoGame>
+  <JTM_Recorded>This game has {0} hours of recordings.</JTM_Recorded>
+  <JTM_TabGeneral>general</JTM_TabGeneral>
+  <JTM_TabLook>look</JTM_TabLook>
+  <JTM_TabText>text</JTM_TabText>
+  <JTM_TabCommands>commands</JTM_TabCommands>
+  <JTM_FilesCount>This game has {0} files and folders made in the terminal.</JTM_FilesCount>
+  <JTM_DeleteFiles>Delete the files of this game</JTM_DeleteFiles>
+  <JTM_DeleteFilesConfirm>Delete every file and folder made in the terminal in this game?</JTM_DeleteFilesConfirm>
+  <JTM_ExportAbout>Export saves this game's files and programs outside the save, import adds them to another game.</JTM_ExportAbout>
+  <JTM_Export>Export the files of this game</JTM_Export>
+  <JTM_Exported>Exported to {0}</JTM_Exported>
+  <JTM_Import>Import files into this game</JTM_Import>
+  <JTM_NothingExported>Nothing exported yet, export from another game first.</JTM_NothingExported>
+  <JTM_ExportEntry>{0}  ({1} files and folders, {2})</JTM_ExportEntry>
+  <JTM_ImportConfirm>Add the files and programs from {0} to this game? Files with the same name are replaced, cron scripts come in turned off.</JTM_ImportConfirm>
+  <JTM_Imported>Import: {0}</JTM_Imported>
+  <JTM_OpenExports>open the exports folder</JTM_OpenExports>
+  <JTM_Colors>Colors</JTM_Colors>
+  <JTM_StartFrom>start from</JTM_StartFrom>
+  <JTM_Glass>glass</JTM_Glass>
+  <JTM_Frame>frame</JTM_Frame>
+  <JTM_InkText>{0} text</JTM_InkText>
+  <JTM_Effects>Effects</JTM_Effects>
+  <JTM_Glow>glow around the text</JTM_Glow>
+  <JTM_Scanlines>scanlines</JTM_Scanlines>
+  <JTM_Vignette>darker edges</JTM_Vignette>
+  <JTM_Band>bright band rolling down</JTM_Band>
+  <JTM_Reflection>glass reflection</JTM_Reflection>
+  <JTM_Warmup>fade in when it opens</JTM_Warmup>
+  <JTM_Font>Font</JTM_Font>
+  <JTM_AllInstalled>all installed</JTM_AllInstalled>
+  <JTM_OpenFonts>open the fonts folder</JTM_OpenFonts>
+  <JTM_FontsAbout>put .ttf or .otf files in it, they show in the list. fonts made for code look best</JTM_FontsAbout>
+  <JTM_TextSize>text size {0}</JTM_TextSize>
+  <JTM_Off>off</JTM_Off>
+  <JTM_CantOpen>couldn't open {0}: {1}</JTM_CantOpen>
+  <JTM_WelcomeAbout>Welcome text, shown when a new terminal starts. One line each, the first one is brighter</JTM_WelcomeAbout>
+  <JTM_DefaultWelcome>default welcome text</JTM_DefaultWelcome>
+  <JTM_StartupAbout>Run when a new terminal starts, like fetch. More than one with ; between them</JTM_StartupAbout>
+  <JTM_PromptLike>Prompt, like {0}</JTM_PromptLike>
+  <JTM_BeforeAt>before the @</JTM_BeforeAt>
+  <JTM_AfterAt>after the @</JTM_AfterAt>
+  <JTM_EmptyHost>empty after the @ uses the colony name</JTM_EmptyHost>
+  <JTM_RenameAbout>Give commands your own names, the first name keeps working too. Empty is the first name.</JTM_RenameAbout>
+  <JTM_AllNamesBack>all names back</JTM_AllNamesBack>
+  <JTM_EditModeName>edit mode: {0}</JTM_EditModeName>
+  <JTM_NameTaken>another command has this name</JTM_NameTaken>
+  <JTM_Brightness>brightness</JTM_Brightness>
+  <JTM_BackToBefore>back to before</JTM_BackToBefore>
+  <JTM_NoGameFiles>Load a game first, the files are kept in each save.</JTM_NoGameFiles>
+  <JTM_KeySounds>Click when typing</JTM_KeySounds>
+  <JTM_KeySoundsDesc>A small click for each key, like an old keyboard.</JTM_KeySoundsDesc>
+</LanguageData>
