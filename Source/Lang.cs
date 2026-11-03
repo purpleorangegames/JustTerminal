@@ -156,7 +156,7 @@ public class Lang
         { "normal", Ink.Normal }, { "dim", Ink.Dim }, { "bright", Ink.Bright }, { "good", Ink.Good }, { "warn", Ink.Warn }, { "warning", Ink.Warn }, { "bad", Ink.Bad }, { "accent", Ink.Accent }
     };
 
-    private static readonly string[] functions = { "pad", "padl", "round", "num", "level", "cap", "lower", "upper", "len", "count", "exists", "path", "min", "max", "arg", "args", "bar", "rbar", "repeat", "prompt", "before", "after", "name", "floor", "cols", "rest", "pawns", "range" };
+    private static readonly string[] functions = { "pad", "padl", "round", "num", "level", "cap", "lower", "upper", "len", "count", "exists", "path", "min", "max", "arg", "args", "bar", "rbar", "repeat", "prompt", "before", "after", "name", "floor", "cols", "rest", "pawns", "range", "line" };
 
     private readonly List<Stmt> program;
     private readonly string name;
@@ -1228,6 +1228,12 @@ public class Lang
                 Need(1);
                 Val from = Eval(c.args[0]);
                 return new Val(from.path == null ? from.text : from.path.TrimEnd('/').Substring(from.path.TrimEnd('/').LastIndexOf('/') + 1));
+            case "line":
+                // one line of a text, line(x, 1) is the first
+                Need(2);
+                string[] textLines = a[0].Replace("\r", "").Split('\n');
+                int ln = (int)Number(a[1]);
+                return new Val(ln >= 1 && ln <= textLines.Length ? textLines[ln - 1] : "");
             case "floor":
                 Need(1);
                 return new Val(Num(Mathf.Floor(Number(a[0]))));

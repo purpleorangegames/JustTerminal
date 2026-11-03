@@ -29,9 +29,19 @@ public static class Programs
 
     // use and programming, from Common/Manual
     public static readonly Dictionary<string, string> Manual = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    // cron scripts and programs to copy with example, from Common/Examples
+    public static readonly Dictionary<string, string> Examples = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
     public static void Load(ModContentPack content)
     {
+        string examples = Path.Combine(content.RootDir, "Common", "Examples");
+        if (Directory.Exists(examples))
+        {
+            foreach (string file in Directory.GetFiles(examples))
+            {
+                Examples[Path.GetFileName(file)] = File.ReadAllText(file).Replace("\r", "");
+            }
+        }
         string manual = Path.Combine(content.RootDir, "Common", "Manual");
         if (Directory.Exists(manual))
         {
@@ -63,6 +73,16 @@ public static class Programs
         {
             string help = c.help;
             GameFs.File(d, c.name, () => "built into the mod, it can't be read or copied\n" + help);
+        }
+    }
+
+    // the cron scripts first, then the programs
+    public static void ExamplesDir(FileNode d)
+    {
+        foreach (KeyValuePair<string, string> e in Examples.OrderBy(e => e.Key.EndsWith(".cron") ? 0 : 1).ThenBy(e => e.Key))
+        {
+            string text = e.Value;
+            GameFs.File(d, e.Key, () => text);
         }
     }
 

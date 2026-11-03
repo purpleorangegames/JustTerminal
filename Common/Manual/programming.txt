@@ -278,6 +278,7 @@ FUNCTIONS
   floor(x)           x rounded down
   arg(1)             the first word typed after the program's name
   args()             how many words were typed after it
+  line(text, 1)      one line of a text, the first here
   rest(2)            every word from the second one on
   cols()             how wide the screen is
   prompt()           the prompt, like rim@colony
@@ -321,6 +322,9 @@ AN EXAMPLE
   if n = 0
     print good nobody is hungry
   end
+
+example lists more to start from, example best.sh copies one to
+~/examples and examples/best.sh runs it.
 
 Read the ones in /bin for more, critical.sh, checkup.sh and
 factions.sh do the most. work.sh, medicine.sh, area.sh, policy.sh and

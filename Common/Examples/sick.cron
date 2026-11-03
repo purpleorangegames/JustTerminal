@@ -1,0 +1,5 @@
+# a letter when a colonist gets a disease
+
+when sick
+fire each
+action letter {who} got {event}, checkup shows how it goes

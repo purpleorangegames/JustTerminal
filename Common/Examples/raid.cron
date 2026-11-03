@@ -1,0 +1,6 @@
+# the moment enemies show up: a message, and a line in ~/log/raids
+# it runs examples/raidlog.sh, so get that one too: example raidlog.sh
+
+when raid
+fire each
+action notify raid, {event} enemies; examples/raidlog.sh

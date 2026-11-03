@@ -1,0 +1,5 @@
+# a letter when a colonist goes down
+
+when downed
+fire each
+action letter {who} is down

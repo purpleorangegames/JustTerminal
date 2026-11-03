@@ -1,0 +1,7 @@
+# every hour, a message with the colonists close to a mental break
+# * goes over every colonist, {names} is who matched
+
+every 1h
+fire each
+if /pawns/*/breaking = yes
+action notify close to a break: {names}

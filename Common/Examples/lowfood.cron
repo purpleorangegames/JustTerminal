@@ -1,0 +1,7 @@
+# a letter when there's less than 3 days of food, once a day at most
+# cron lowfood on turns it on
+
+every 2h
+fire daily
+if /stock/food < 3
+action letter only {value} days of food left

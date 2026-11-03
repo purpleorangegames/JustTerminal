@@ -176,6 +176,7 @@ Everything under / is the game itself, read when you look and never
 changed by you. ls and cat work there like anywhere else.
 
   /bin        the commands, see manual programming
+  /examples   cron scripts and programs, example copies them to ~
   /colony     name, wealth, mood, day, hour, season, temp, weather...
   /pawns      a folder for each colonist: mood, health, food, rest,
               joy, pain, job, downed, drafted, idle, skills and more
@@ -252,6 +253,10 @@ from the action.
   cron_edit               the same with keys: up, down, enter on/off,
                           left, right every (or when), f fire,
                           t test, e edit
+
+example lists cron scripts and programs to start from, example
+raid.cron copies that one to ~/examples. Turn it on with cron raid on,
+change it with nano.
 
 notify hello shows a message at the top left, letter hello a letter on
 the right. Those are the usual actions.

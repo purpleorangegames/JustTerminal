@@ -20,6 +20,7 @@ public static class GameFs
         FileNode top = Dir("/", null, null);
         Dir("bin", top, Programs.Bin);
         Dir("manual", top, Programs.ManualDir);
+        Dir("examples", top, Programs.ExamplesDir);
         if (Current.ProgramState != ProgramState.Playing || Current.Game == null)
         {
             return top;
