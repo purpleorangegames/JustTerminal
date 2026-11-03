@@ -81,6 +81,10 @@ public class Recorder : GameComponent
 
     public List<PawnGroup> Groups => groups;
 
+    // spots saved with place save, for goto
+    private List<SavedPlace> places = new List<SavedPlace>();
+    public List<SavedPlace> Places => places;
+
     public PawnGroup FindGroup(string name) => groups.FirstOrDefault(g => g.name.Equals(name, StringComparison.OrdinalIgnoreCase));
 
     public void SetGroup(string name, List<Pawn> pawns)
@@ -194,6 +198,7 @@ public class Recorder : GameComponent
     {
         Scribe_Collections.Look(ref series, "series", LookMode.Deep);
         Scribe_Collections.Look(ref groups, "groups", LookMode.Deep);
+        Scribe_Collections.Look(ref places, "places", LookMode.Deep);
         Scribe_Deep.Look(ref files, "files");
         if (Scribe.mode == LoadSaveMode.PostLoadInit)
         {
@@ -201,6 +206,8 @@ public class Recorder : GameComponent
             series.RemoveAll(s => s?.key == null);
             groups ??= new List<PawnGroup>();
             groups.RemoveAll(g => g?.name == null);
+            places ??= new List<SavedPlace>();
+            places.RemoveAll(p => p?.name == null);
             files ??= new FileNode { name = "~", folder = true };
             files.parent = null;
             byKey = null;

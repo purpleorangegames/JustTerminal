@@ -31,6 +31,10 @@ graph draws graphs over time: temperature outside (with a forecast), wealth, moo
 
 The normal commands only read. Type edit to go into edit mode, the screen turns red and the commands there change your colonists: work priorities, medicine, allowed area, policies, ideoligion roles (it opens the ritual), exile and caravans. You can make groups, like group miners Drill Wolf Kovul and then work @miners mining 1. draft, undraft and schedule are there too, and storage can copy what one stockpile takes to every shelf or the ones in a room.
 
+research picks the next project, prisoner sets what the wardens do, hunt, tame, slaughter, master and train are for animals, bed gives out beds, switch sends someone to turn things on or off, and forbid and allow work on what's in storage.
+
+pick hides the terminal and pauses the game so you can click a spot on the map, it tells you the x,z. place save gate pick keeps that spot with a name, and goto @guards gate drafts the guards and sends them there.
+
 There are files too, kept in the save and not on your computer: ls, cd, mkdir, cat, less, cp, mv, rm and nano to write them. The folders under / are the game itself, read only, like cat /stock/food or ls /pawns/Tasca.
 
 Files that end in .sh are programs. Most commands are programs you can read in /bin, copy to ~/bin and change, or you can write your own. The language is simple: for, if, print, and set to change things in edit mode.

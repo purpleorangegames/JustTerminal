@@ -41,6 +41,9 @@ public static partial class GameFs
         Dir("research", top, Research);
         Dir("prisoners", top, d => Numbered(d, PawnsFinder.AllMapsCaravansAndTravellingTransporters_Alive_PrisonersOfColony.OrderBy(p => p.LabelShort), PrisonerFiles));
         Dir("animals", top, d => Numbered(d, MapCommands.Ours().Where(p => p.RaceProps.Animal && p.Faction == Faction.OfPlayer), AnimalFiles));
+        Dir("wild", top, Wild);
+        Dir("beds", top, Beds);
+        Dir("places", top, Places);
         Dir("mechs", top, d => Numbered(d, MapCommands.Ours().Where(p => p.RaceProps.IsMechanoid && p.Faction == Faction.OfPlayer), MechFiles));
         Dir("quests", top, Quests);
         Dir("world", top, w => Dir("towns", w, Towns));
@@ -402,11 +405,11 @@ public static partial class GameFs
 
     private static void Research(FileNode d)
     {
-        File(d, "current", () => Find.ResearchManager.GetProject()?.LabelCap.ToString() ?? "none");
+        Writable(d, "current", () => Find.ResearchManager.GetProject() is ResearchProjectDef r ? Word(r.LabelCap.ToString()) : "none", SetResearch);
         File(d, "progress", () => (Find.ResearchManager.GetProject()?.ProgressPercent ?? 0f) * 100f);
         File(d, "done", () => DefDatabase<ResearchProjectDef>.AllDefs.Count(r => r.IsFinished));
         File(d, "total", () => DefDatabase<ResearchProjectDef>.AllDefs.Count());
-        File(d, "available", () => string.Join(", ", DefDatabase<ResearchProjectDef>.AllDefs.Where(r => r.CanStartNow).Select(r => r.LabelCap.ToString()).OrderBy(n => n)) is string a && a.Length > 0 ? a : "none");
+        File(d, "available", () => string.Join(", ", DefDatabase<ResearchProjectDef>.AllDefs.Where(r => r.CanStartNow).Select(r => Word(r.LabelCap.ToString())).OrderBy(n => n)) is string a && a.Length > 0 ? a : "none");
     }
 
     private static void PrisonerFiles(FileNode f, Pawn p)
@@ -416,7 +419,7 @@ public static partial class GameFs
         File(f, "resistance", () => p.guest?.resistance ?? 0f, "0.#");
         File(f, "will", () => p.guest?.will ?? 0f, "0.#");
         File(f, "recruitable", () => p.guest?.Recruitable ?? false);
-        File(f, "mode", () => p.guest?.ExclusiveInteractionMode?.label ?? "none");
+        PrisonerMode(f, p);
         File(f, "health", () => p.health.summaryHealth.SummaryHealthPercent * 100f);
         File(f, "downed", () => p.Downed);
     }
@@ -427,7 +430,8 @@ public static partial class GameFs
         File(f, "kind", () => p.KindLabel);
         File(f, "health", () => p.health.summaryHealth.SummaryHealthPercent * 100f);
         File(f, "food", () => Percent(p.needs?.food?.CurLevelPercentage));
-        File(f, "master", () => p.playerSettings?.Master?.LabelShort ?? "none");
+        File(f, "pos", () => Pos(p.Position));
+        AnimalSettings(f, p);
         File(f, "bonded", () => p.relations?.GetFirstDirectRelationPawn(PawnRelationDefOf.Bond)?.LabelShort ?? "none");
         File(f, "downed", () => p.Downed);
     }
@@ -698,6 +702,7 @@ public static partial class GameFs
         File(d, "used", () => PowerOf().used);
         File(d, "stored", () => PowerOf().stored);
         File(d, "max", () => PowerOf().max);
+        Dir("switches", d, Switches);
     }
 
     private static (float made, float used, float stored, float max) PowerOf()

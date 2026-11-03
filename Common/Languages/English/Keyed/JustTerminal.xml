@@ -65,4 +65,5 @@ Off, nothing from this mod goes in the save. The graphs still work, but they sta
   <JTM_NoGameFiles>Load a game first, the files are kept in each save.</JTM_NoGameFiles>
   <JTM_KeySounds>Click when typing</JTM_KeySounds>
   <JTM_KeySoundsDesc>A small click for each key, like an old keyboard.</JTM_KeySoundsDesc>
+  <JTM_PickHint>Click a spot on the map, right click stops</JTM_PickHint>
 </LanguageData>

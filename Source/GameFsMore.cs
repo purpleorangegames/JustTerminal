@@ -14,7 +14,6 @@ public static partial class GameFs
 {
     private static string F(float v, string format = "0") => v.ToString(format, CultureInfo.InvariantCulture);
 
-    private static string Word(string label) => (label ?? "").Replace(' ', '_').ToLowerInvariant();
 
     private static bool YesNo(string value, out bool on)
     {
@@ -121,6 +120,7 @@ public static partial class GameFs
                 return null;
             });
             File(f, "now", () => p.timetable.CurrentAssignment?.label ?? "none");
+            File(f, "pos", () => p.Spawned ? Pos(p.Position) : "none");
         }
         if (p.needs?.mood != null)
         {
@@ -381,6 +381,7 @@ public static partial class GameFs
                 settings.Priority = (StoragePriority)(i + 1);
                 return null;
             });
+            Writable(f, "forbid", () => Forbidden(g), value => SetForbidden(g, value));
             Writable(f, "filter", () => FilterText(settings.filter), value => SetFilter(link ?? g.parent as IStoreSettingsParent, settings, value));
         });
     }

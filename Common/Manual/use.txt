@@ -158,6 +158,42 @@ help there to see them, exit leaves.
                                   m meditate, one letter an hour
   schedule @night nightshift      sleeps 10 to 18
   schedule all reset              back to the game's start
+  research hydroponics            research that next
+  prisoner 1 recruit              the wardens recruit prisoner 1
+  hunt boar                       mark every boar to hunt, see wild
+  tame 3                          mark the third wild animal to tame
+  slaughter chicken               mark every chicken to slaughter
+  master Buster Tasca             Tasca handles Buster
+  train Buster guard              train Buster to guard
+  bed Tasca 3                     bed 3 is Tasca's, bed lists them
+  switch heater off               a colonist goes to turn the heaters off
+  forbid 3                        everything in storage 3 is forbidden
+  allow all                       everything in storage is allowed again
+  goto @guards gate               draft the guards and send them to gate
+
+research, prisoner, bed and switch also work outside edit mode to
+show things, the change needs edit mode.
+
+
+PLACES
+
+Spots on the map are x,z, x goes right and z goes up, like
+cat /pawns/Tasca/pos shows. pick hides the terminal and pauses the game
+until you click somewhere on the map, then it says the x,z. Right click
+stops it.
+
+  pick                            click a spot, it says the x,z
+  place save gate pick            click the spot to save as gate
+  place save gate 120,84          the same with x,z
+  place save bunk Tasca           where Tasca stands now
+  place                           the saved places
+  place rm gate                   forgets gate
+
+Places are in the save. In edit mode goto drafts colonists and sends
+them to a place, x,z, a colonist or pick, a group spreads out around it:
+
+  goto @guards gate
+  goto all pick
 
 
 STORAGE
@@ -229,7 +265,10 @@ changed by you. ls and cat work there like anywhere else.
   /letters    the letters waiting
   /research   the project going on, its progress, what's available
   /prisoners  each one with resistance, will and what you set
-  /animals    your animals with their master and bond
+  /animals    your animals with their master, bond and training
+  /wild       wild animals on the map, closest first, hunt and tame
+  /beds       the colonists' beds with their room and owner
+  /places     the places saved with place save
   /mechs      your mechs with their energy
   /quests     the quests waiting for an answer or going on
   /world      the towns of other factions, closest first
@@ -242,8 +281,9 @@ changed by you. ls and cat work there like anywhere else.
   /storage    stockpiles and shelves, with what they take
   /ideology, /mechanitors, /anomaly   when those DLCs are on
 
-Each colonist's folder also has thoughts, social, records, schedule
-and drafted, and certainty, role, royaltitle and psylink with the DLCs.
+Each colonist's folder also has thoughts, social, records, schedule,
+drafted and pos, and certainty, role, royaltitle and psylink with the
+DLCs.
   /work, /care, /areas, /policies, /groups
               the choices the edit commands use
 

@@ -218,6 +218,15 @@ These can change too:
                                     or critical
   /storage/1/filter                 what it takes, as text
   /storage/1/name                   links and zones only
+  /storage/1/forbid                 yes or no, for everything in it
+  /research/current                 a project from /research/available
+  /prisoners/1/mode                 one of /prisoners/1/modes
+  /animals/1/master                 a colonist or none
+  /animals/1/slaughter              yes or no
+  /animals/1/training/guard         yes or no, each one it can learn
+  /wild/1/hunt, /wild/1/tame        yes or no
+  /beds/1/owner                     a colonist or none
+  /power/switches/1/on              yes or no, a colonist flicks it
 
 Numbered folders take 1 as well as 01.
 
