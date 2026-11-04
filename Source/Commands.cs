@@ -296,12 +296,18 @@ public static class Commands
         if (args.Length > 0)
         {
             Command c = (sh.EditMode ? EditCommands.Find(args[0]) : null) ?? Find(args[0]);
-            if (c == null)
+            // edit commands show outside edit mode too, so you can read about them first
+            Command edit = c == null ? EditCommands.Find(args[0]) : null;
+            if (c == null && edit == null)
             {
                 sh.Print("no command called " + args[0], Ink.Bad);
                 return;
             }
-            HelpFor(sh, c);
+            if (edit != null)
+            {
+                sh.Print(edit.Shown + " is an edit mode command, type edit first to use it", Ink.Warn);
+            }
+            HelpFor(sh, c ?? edit);
             return;
         }
         int width = All.Max(c => (c.Shown + " " + c.args).Length) + 2;

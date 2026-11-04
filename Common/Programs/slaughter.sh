@@ -7,6 +7,9 @@ if args() = 0
 end
 on = "yes"
 w = arg(1)
+if lower(w) = "on"
+  w = arg(2)
+end
 if lower(w) = "off"
   on = "no"
   w = arg(2)
