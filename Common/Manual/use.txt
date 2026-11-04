@@ -158,7 +158,8 @@ help there to see them, exit leaves.
                                   m meditate, one letter an hour
   schedule @night nightshift      sleeps 10 to 18
   schedule all reset              back to the game's start
-  research hydroponics            research that next
+  research hydroponics            research that now
+  research then hydroponics       after what's queued, with JustDesktop
   prisoner 1 recruit              the wardens recruit prisoner 1
   hunt boar                       mark every boar to hunt, see wild
   tame 3                          mark the third wild animal to tame
@@ -221,6 +222,79 @@ has them share what they take. Rooms and single shelves have no name
 of their own in the game, so they can't be renamed.
 
 Who can be a name, @ and a group, or all.
+
+
+HOW TO DO THINGS
+
+Common jobs and the commands for them. The ones that change things
+need edit mode. help <command> has more examples for each.
+
+Looking:
+  who is hungriest        pawns, the FOOD column, lowest is hungriest
+  who is hurt or sick     critical for the worst, checkup for diseases
+  what someone is doing   pawn Tasca, why Tasca for their thoughts
+  who has nothing to do   idle
+  is something coming     danger, visitors for traders and guests
+  where someone is        cat /pawns/Tasca/pos, look Tasca moves there
+  one value               cat /stock/food, ls a folder to see its files
+
+Colonists:
+  night shift             schedule Tasca nightshift
+  back to the normal day  schedule Tasca reset
+  several at once         group night Tasca Drill, then
+                          schedule @night nightshift
+  more than one change    one command a line, schedule Tasca nightshift
+                          and schedule Drill reset are two commands
+  who does a job          work all doctor 1, work Tasca mining 0
+  fight                   draft @guards, then goto @guards gate
+  send somewhere          place save gate pick, then goto Tasca gate
+
+Research:
+  start a project now     research hydroponics
+  after the current one   research then hydroponics, with JustDesktop
+  see the queue           research
+
+Animals:
+  hunt a kind             wild lists them, then hunt rat, hunt all rats
+                          and hunt the boomrats work too
+  stop hunting            hunt off rat
+  tame or slaughter       tame 3, slaughter chicken, the same way
+
+Letters when something happens:
+  copy an example         ls /examples, then example breaking.cron
+  turn it on              cron breaking on
+  write your own          a .cron file in ~, see CRON SCRIPTS, when break
+                          and the other when lines need no every
+
+A program of your own:
+  ~/bin/name.sh, then name runs it. Look at /examples/hungry.sh and
+  manual programming first. Run it after writing it to see it works.
+
+
+WHAT IT CAN'T DO
+
+The terminal reads the game and changes settings, it doesn't give the
+orders you give on the map. These have no command, they're done in the
+game itself:
+
+  building anything, walls, floors, doors, blueprints, deconstructing
+  mining, cutting trees, harvesting, hauling, cleaning a spot
+  making, moving or resizing zones, stockpiles and areas
+  (storage changes what one takes, area picks which one a colonist
+  keeps to, forbid and allow work on what's in storage)
+  adding or removing bills, a program can only change the count or
+  suspend one, see bills
+  buying and selling, trade only shows the traders and their goods
+  operations, arresting, rescuing, tending, equipping or dropping gear
+  attacking something, goto only moves drafted colonists to a spot
+  forming a caravan, caravan opens the window and you pick what goes
+  saving, loading and the game speed, a program can only pause with
+  /time
+  anything ls doesn't show as can change in a colonist's folder, like
+  names, traits or skills
+
+When the ai is asked for one of these it should say it can't be done
+from the terminal and where in the game it's done.
 
 
 FILES

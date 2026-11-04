@@ -106,7 +106,7 @@ public static class Programs
             int start = -1;
             for (int i = 0; i <= lines.Length; i++)
             {
-                bool heading = i < lines.Length && (i == 0 || lines[i - 1].Trim().Length == 0) && Regex.IsMatch(lines[i], "^[A-Z][A-Z ,&/-]+$");
+                bool heading = i < lines.Length && (i == 0 || lines[i - 1].Trim().Length == 0) && Regex.IsMatch(lines[i], "^[A-Z][A-Z ,&/'-]+$");
                 if (!heading && i < lines.Length)
                 {
                     continue;
