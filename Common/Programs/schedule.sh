@@ -7,6 +7,11 @@ if args() = 0
   print dim usage: schedule <who> [reset|nightshift|24 letters]
   stop
 end
+# more words would be lost, like a second schedule typed on the same line
+if args() > 2
+  print bad schedule takes who and one schedule, {rest(3)} is extra, run each on its own line
+  stop
+end
 out {pad("", 14)}
 print dim 0     6     12    18
 for p in pawns(arg(1))
