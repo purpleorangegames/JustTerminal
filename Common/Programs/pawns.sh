@@ -1,9 +1,10 @@
-# pawns: everyone with mood, health and what they're doing
+# pawns: everyone with mood, health, food and what they're doing
 
 out dim {pad("NAME", 14)}
 out dim {pad("AGE", 5)}
 out dim {pad("MOOD", 13)}
 out dim {pad("HEALTH", 13)}
+out dim {pad("FOOD", 6)}
 print dim DOING
 
 n = 0
@@ -19,6 +20,12 @@ for p in /pawns
   out {"   "}
   bar p/health 10
   out {"   "}
+  # the food number, so the hungriest shows without reading each pawn
+  if p/food = none
+    out {pad("", 6)}
+  else
+    out {pad(p/food + "%", 6)}
+  end
   if p/mental != none
     print bad {p/doing}
   else

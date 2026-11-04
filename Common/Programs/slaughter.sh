@@ -6,17 +6,23 @@ if args() = 0
   stop
 end
 on = "yes"
-w = arg(1)
-if lower(w) = "on"
-  w = arg(2)
+first = 1
+if lower(arg(1)) = "on"
+  first = 2
 end
-if lower(w) = "off"
+if lower(arg(1)) = "off"
   on = "no"
-  w = arg(2)
+  first = 2
 end
+# "hunt all rats" is the same as hunt rat
+if lower(arg(first)) = "all" or lower(arg(first)) = "the"
+  first = first + 1
+end
+w = rest(first)
+k = lower(replace(w, "_", " "))
 n = 0
 for a in /animals
-  if name(a) + 0 = w + 0 or lower(a/kind) = lower(replace(w, "_", " ")) or lower(a/name) = lower(replace(w, "_", " "))
+  if name(a) + 0 = w + 0 or lower(a/kind) = k or lower(a/kind) + "s" = k or lower(a/kind) + "es" = k or lower(a/name) = k
     try set a/slaughter = on
     n = n + 1
   end

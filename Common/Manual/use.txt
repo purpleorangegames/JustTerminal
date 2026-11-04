@@ -55,7 +55,7 @@ These only read, nothing here changes the game.
   fetch       colony info next to a little picture
   colony      name, storyteller, colonists, wealth and more
   date        date, hour and season
-  pawns       everyone with mood, health and what they're doing
+  pawns       everyone with mood, health, food and what they're doing
   pawn        one colonist in detail, pawn Tasca
   critical    wounds nobody treated yet, worst bleeding first
   checkup     diseases with how the fight is going, treated wounds
