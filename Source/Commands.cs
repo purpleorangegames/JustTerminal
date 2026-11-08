@@ -291,6 +291,61 @@ public static class Commands
         }
     }
 
+    // the command list like a man page's: name and arguments, the description from one column on, wrapped by words
+    // with the same indent. A command too long for the column gets its description on the line under it
+    public static void List(Shell sh, IEnumerable<Command> commands)
+    {
+        List<Command> list = commands.ToList();
+        int cols = Math.Max(40, sh.Cols);
+        // at most 24 wide, so the descriptions keep most of the line; on a narrow screen they all go under
+        int column = Math.Min(list.Max(c => (c.Shown + " " + c.args).Length) + 2, 24);
+        bool under = cols - column < 30;
+        if (under)
+        {
+            column = 4;
+        }
+        foreach (Command c in list)
+        {
+            int length = c.Shown.Length + (c.args.Length > 0 ? 1 + c.args.Length : 0);
+            sh.Out(c.Shown, Ink.Bright);
+            if (c.args.Length > 0)
+            {
+                sh.Out(" " + c.args, Ink.Dim);
+            }
+            bool next = under || length + 2 > column;
+            if (next)
+            {
+                sh.Print();
+            }
+            List<string> lines = WrapWords(c.help, cols - column - 1);
+            for (int i = 0; i < lines.Count; i++)
+            {
+                sh.Out(new string(' ', i == 0 && !next ? column - length : column));
+                sh.Print(lines[i]);
+            }
+        }
+    }
+
+    public static List<string> WrapWords(string text, int width)
+    {
+        List<string> lines = new List<string>();
+        string line = "";
+        foreach (string word in (text ?? "").Split(' '))
+        {
+            if (line.Length > 0 && line.Length + 1 + word.Length > width)
+            {
+                lines.Add(line);
+                line = word;
+            }
+            else
+            {
+                line = line.Length > 0 ? line + " " + word : word;
+            }
+        }
+        lines.Add(line);
+        return lines;
+    }
+
     private static void Help(Shell sh, string[] args)
     {
         if (args.Length > 0)
@@ -310,13 +365,7 @@ public static class Commands
             HelpFor(sh, c ?? edit);
             return;
         }
-        int width = All.Max(c => (c.Shown + " " + c.args).Length) + 2;
-        foreach (Command c in All.Where(c => !c.hidden))
-        {
-            sh.Out(Pad(c.Shown, c.Shown.Length + 1), Ink.Bright);
-            sh.Out(Pad(c.args, width - c.Shown.Length - 1), Ink.Dim);
-            sh.Print(c.help);
-        }
+        List(sh, All.Where(c => !c.hidden));
         sh.Print();
         sh.Out("examples: ", Ink.Dim);
         sh.Out("pawns", Ink.Accent);

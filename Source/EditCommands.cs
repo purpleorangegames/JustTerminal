@@ -78,13 +78,7 @@ public static class EditCommands
             return;
         }
         sh.Print("edit mode, these change the game", Ink.Bright);
-        int width = All.Max(c => (c.Shown + " " + c.args).Length) + 2;
-        foreach (Command c in All)
-        {
-            sh.Out(Commands.Pad(c.Shown, c.Shown.Length + 1), Ink.Bright);
-            sh.Out(Commands.Pad(c.args, width - c.Shown.Length - 1), Ink.Dim);
-            sh.Print(c.help);
-        }
+        Commands.List(sh, All);
         sh.Print();
         sh.Print("who is a colonist, @group or all, use _ for spaces in names", Ink.Dim);
         sh.Out("examples: ", Ink.Dim);
